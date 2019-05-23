@@ -1,5 +1,6 @@
 ================================
 Теряев Сергей ДЗ 02
+https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less02
 ================================
 
 package com.geekbrains.teryaevs.obstacles;
