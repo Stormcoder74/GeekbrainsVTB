@@ -1,0 +1,253 @@
+================================
+Теряев Сергей ДЗ 02
+================================
+
+package com.geekbrains.teryaevs.obstacles;
+
+public enum Type{
+    RUN, JUMP
+}
+
+public enum Task {
+    CROSS3000(Type.RUN, 3000),
+    CROSS5000(Type.RUN, 5000),
+    SPRINT100(Type.RUN, 100),
+    WALL2(Type.JUMP, 2),
+    WALL3(Type.JUMP, 3),
+    WALL5(Type.JUMP, 5);
+
+    private Type type;
+    private int value;
+
+    Task(Type type, int value) {
+        this.type = type;
+        if (value > 0) {
+            this.value = value;
+        } else
+            try {
+                throw new NumberFormatException("Not valid value. It must be great than zero.");
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                this.value = Integer.MAX_VALUE;
+            }
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}
+
+public interface Obstacle {
+    Task getTask();
+
+    default String trouble(){
+        return "";
+    }
+}
+public interface Track extends Obstacle {
+    // маркерный интерфейс
+}
+public interface Wall extends Obstacle {
+    // маркерный интерфейс
+}
+
+public class MudTrack implements Track {
+    private static final String trouble = " по ужасной грязи";
+    private Task task;
+
+    public MudTrack(Task task) throws BadAttributeValueExpException {
+        if (task.getType() != Type.RUN)
+            throw new BadAttributeValueExpException("Track task type must be RUN");
+        this.task = task;
+    }
+
+    @Override
+    public Task getTask() {
+        return task;
+    }
+
+    @Override
+    public String trouble() {
+        return trouble;
+    }
+}
+
+public class FireWall implements Wall {
+    private static final String trouble = " в адском огне";
+    private Task task;
+
+    public FireWall(Task task) throws BadAttributeValueExpException {
+        if (task.getType() != Type.JUMP)
+            throw new BadAttributeValueExpException("Wall task type must be JUMP");
+        this.task = task;
+    }
+
+    @Override
+    public Task getTask() {
+        return task;
+    }
+
+    @Override
+    public String trouble() {
+        return trouble;
+    }
+}
+
+public class SimpleCross3000 implements Track {
+    @Override
+    public Task getTask() {
+        return Task.CROSS3000;
+    }
+}
+
+package com.geekbrains.teryaevs.competitors;
+
+public interface Competitor {
+    void perform(Obstacle obstacle);
+}
+
+class CompetitorModule {
+    private String name;
+    private int runLimit;
+    private int jumpLimit;
+
+    private boolean nextStage = true;
+
+    CompetitorModule(String name, int runLimit, int jumpLimit) {
+        this.name = name;
+        this.runLimit = runLimit;
+        this.jumpLimit = jumpLimit;
+    }
+
+    void perform(Obstacle obstacle) {
+        switch (obstacle.getTask().getType()){
+            case RUN: run((Track) obstacle);
+                break;
+            case JUMP: jump((Wall) obstacle);
+        }
+
+    }
+
+    private void jump(Wall wall) {
+        if (nextStage) {
+            int height = wall.getTask().getValue();
+            String trouble = wall.trouble();
+            if (height <= jumpLimit)
+                System.out.println(name + " перепрыгнул стену" +
+                        trouble + " высотой " + height + " м");
+            else {
+                System.out.println(name + " не смог перепрыгнуть стену" +
+                        trouble + " высотой " + height + " м");
+                nextStage = false;
+            }
+        }
+    }
+
+    private void run(Track track) {
+        if (nextStage) {
+            int length = track.getTask().getValue();
+            if (length <= runLimit)
+                System.out.println(name + " пробежал дистанцию" +
+                        track.trouble() + " длинной " + length + " м");
+            else {
+                System.out.println(name + " не смог пробежать дистанцию" +
+                        track.trouble() + " длинной " + length + " м");
+                nextStage = false;
+            }
+        }
+    }
+}
+
+public class Human implements Competitor {
+    private CompetitorModule module;
+
+    public Human(String name) {
+        this(name, 3000, 3);
+    }
+
+    public Human(String name, int runLimit, int jumpLimit) {
+        module = new CompetitorModule(name, runLimit, jumpLimit);
+    }
+
+    @Override
+    public void perform(Obstacle obstacle) {
+        module.perform(obstacle);
+    }
+}
+
+public class Cat implements Competitor {
+    private CompetitorModule module;
+
+    public Cat(String name) {
+        this(name, 100, 5);
+    }
+
+    public Cat(String name, int runLimit, int jumpLimit) {
+        module = new CompetitorModule(name, runLimit, jumpLimit);
+    }
+
+    @Override
+    public void perform(Obstacle obstacle) {
+        module.perform(obstacle);
+    }
+}
+
+public class Bot implements Competitor {
+    private CompetitorModule module;
+
+    public Bot(String name) {
+        this(name, 10000, 1);
+    }
+
+    public Bot(String name, int runLimit, int jumpLimit) {
+        module = new CompetitorModule(name, runLimit, jumpLimit);
+    }
+
+    @Override
+    public void perform(Obstacle obstacle) {
+        module.perform(obstacle);
+    }
+}
+
+package com.geekbrains.teryaevs;
+
+public class MainApp {
+    static final int stageAmount = 3;
+
+    public static void main(String[] args) throws BadAttributeValueExpException {
+	
+        List<Obstacle> obstacles = new ArrayList<>();
+        obstacles.add(new MudTrack(Task.SPRINT100));
+        obstacles.add(new MudTrack(Task.CROSS5000));
+        obstacles.add(new SimpleCross3000());
+        obstacles.add(new FireWall(Task.WALL2));
+        obstacles.add(new FireWall(Task.WALL3));
+        obstacles.add(new FireWall(Task.WALL5));
+
+        List<Competitor> competitors = new ArrayList<>();
+        competitors.add(new Human("Иван"));
+        competitors.add(new Cat("Мурзик"));
+        competitors.add(new Bot("Bot-10000"));
+        competitors.add(new Bot("Superbot-10000-J10", 10000, 10));
+
+        for (Competitor c : competitors) {
+            for (int i = 0; i < stageAmount; i++){
+                c.perform(obstacles.get((int) (Math.random() * obstacles.size())));
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+

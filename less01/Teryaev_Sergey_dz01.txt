@@ -1,0 +1,160 @@
+================================
+Теряев Сергей ДЗ 01
+================================
+--------------------------------
+Animal.java
+--------------------------------
+package com.geekbrains.teryaevs;
+
+public abstract class Animal {
+    public static int animalCounter = 0;
+
+    private String name;
+    private int age;
+
+    private int runLimit;
+    private int swimLimit;
+
+    public Animal(String name, int age, int runLimit, int swimLimit) {
+        this.name = name;
+        this.age = age;
+        this.runLimit = runLimit;
+        this.swimLimit = swimLimit;
+
+        animalCounter++;
+    }
+
+    @Override
+    public String toString() {
+        return name + ", " + age + " years old";
+    }
+
+    public void run(int length) {
+        if (runLimit == 0)
+            System.out.println(this + " can't run");
+        else if (length > runLimit)
+            System.out.println(this + " can't run so much");
+        else
+            System.out.println(this + " ran " + length + " meters");
+    }
+
+
+    public void swim(int length) {
+        if (swimLimit == 0)
+            System.out.println(this + " can't swim");
+        else if (length > swimLimit)
+            System.out.println(this + " can't swim so much");
+        else
+            System.out.println(this + " swam " + length + " meters");
+    }
+
+    public static int getCounter(){
+        return animalCounter;
+    }
+}
+
+--------------------------------
+Cat.java
+--------------------------------
+package com.geekbrains.teryaevs;
+
+public class Cat extends Animal {
+    public static int catCounter = 0;
+
+    public Cat(String name, int age) {
+        super(name, age, 200, 0);
+
+        catCounter++;
+    }
+
+    @Override
+    public String toString() {
+        return "Cat " + super.toString();
+    }
+
+    public static int getCounter(){
+        return catCounter;
+    }
+}
+
+--------------------------------
+Dog.java
+--------------------------------
+package com.geekbrains.teryaevs;
+
+public class Dog extends Animal {
+    public static int dogCounter = 0;
+
+    public Dog(String name, int age) {
+        super(name, age, 500, 10);
+
+        dogCounter++;
+    }
+
+    @Override
+    public String toString() {
+        return "Dog " + super.toString();
+    }
+
+    public static int getCounter(){
+        return dogCounter;
+    }
+}
+
+--------------------------------
+Tiger.java
+--------------------------------
+package com.geekbrains.teryaevs;
+
+public class Tiger extends Animal {
+    public static int tigerCounter = 0;
+
+    public Tiger(String name, int age) {
+        super(name, age, Integer.MAX_VALUE, Integer.MAX_VALUE);
+
+        tigerCounter++;
+    }
+
+    @Override
+    public String toString() {
+        return "Tiger " + super.toString();
+    }
+
+    public static int getCounter(){
+        return tigerCounter;
+    }
+}
+
+--------------------------------
+Main.java
+--------------------------------
+package com.geekbrains.teryaevs;
+
+public class Main {
+    public static void main(String[] args) {
+        Animal[] animals = {
+                new Cat("Barsik", 3),
+                new Cat("Murzik", 4),
+                new Dog("Sharik", 7),
+                new Dog("Barbos", 5),
+                new Dog("Pirat", 4),
+                new Tiger("Sherkhan", 12)
+        };
+
+        for (Animal animal : animals) {
+            animal.run(300);
+            animal.run(150);
+            animal.swim(15);
+            animal.swim(7);
+        }
+
+        System.out.println();
+        System.out.println("took part in the competition:");
+        System.out.println("animal " + Animal.getCounter());
+        System.out.println("cat " + Cat.getCounter());
+        System.out.println("dog " + Dog.getCounter());
+        System.out.println("tiger " + Tiger.getCounter());
+    }
+
+
+}
