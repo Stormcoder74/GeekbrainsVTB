@@ -1,6 +1,6 @@
 ================================
 Теряев Сергей ДЗ 03
-https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less02
+https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less03
 ================================
 
 package com.geekbrains.teryaevs.exceptions;
