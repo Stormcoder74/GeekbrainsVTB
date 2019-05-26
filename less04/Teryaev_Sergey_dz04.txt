@@ -40,7 +40,7 @@ public class MainApp {
 
 package com.geekbrains.teryaevs.task3;
 
-public abstract class Fruit {
+public abstract class Fruit { 
     protected String type;
     protected float weight;
 

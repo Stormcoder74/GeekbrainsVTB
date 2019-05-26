@@ -9,7 +9,7 @@ public abstract class Fruit {
         this.weight = weight;
     }
 
-    public String getType() {
+    public String getType(){
         return type;
     }
 

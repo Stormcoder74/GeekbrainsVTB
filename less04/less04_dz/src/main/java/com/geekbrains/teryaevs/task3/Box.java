@@ -16,22 +16,22 @@ public class Box<T extends Fruit> {
         Collections.addAll(box, array);
     }
 
-    public float getWeight(){
+    public float getWeight() {
         if (box.size() == 0)
             return 0;
 
         return box.size() * box.get(0).getWeight();
     }
 
-    public boolean add(T element){
+    public boolean add(T element) {
         return box.add(element);
     }
 
-    public boolean compare(Box<? extends Fruit> another){
+    public boolean compare(Box<? extends Fruit> another) {
         return getWeight() - another.getWeight() < 0.0001;
     }
 
-    public void pourIn(Box<T> another){
+    public void pourIn(Box<T> another) {
         for (int i = box.size() - 1; i >= 0; i--)
             another.add(box.remove(i));
     }

@@ -10,13 +10,13 @@ public class MainApp {
 
         List<String> list = toArrayList(array);
 
-        for (String s: list)
+        for (String s : list)
             System.out.println(s);
     }
 
     private static <E> void transposition(E[] array, int position1, int position2)
             throws IndexOutOfBoundsException {
-        if (position1 < array.length && position2 < array.length){
+        if (position1 < array.length && position2 < array.length) {
             E tmp = array[position1];
             array[position1] = array[position2];
             array[position2] = tmp;
@@ -25,7 +25,7 @@ public class MainApp {
         throw new IndexOutOfBoundsException();
     }
 
-    private static <E> ArrayList<E> toArrayList(E... array){
+    private static <E> ArrayList<E> toArrayList(E... array) {
         ArrayList<E> list = new ArrayList<>(array.length);
         for (E e : array)
             list.add(e);

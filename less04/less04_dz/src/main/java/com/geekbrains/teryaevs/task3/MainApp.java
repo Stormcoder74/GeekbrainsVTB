@@ -1,7 +1,7 @@
 package com.geekbrains.teryaevs.task3;
 
 public class MainApp {
-    public static void main(String[] args) {
+    public static void main(String[] args){
 
         Box<Apple> aBox1 = new Box<>();
         Box<Apple> aBox2 = new Box<>(new Apple(),
