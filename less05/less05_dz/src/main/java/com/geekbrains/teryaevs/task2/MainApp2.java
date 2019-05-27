@@ -33,8 +33,8 @@ public class MainApp2 {
         System.out.println();
 
         for (Map.Entry<String, Set<String>> entry : phoneBook.entrySet())
-            for (String phone : entry.getValue()) {
+            for (String phone : entry.getValue())
                 System.out.println(entry.getKey() + ": " + phone);
-            } // выведет все телефоны справочника в отсортированном виде
+        // выведет все телефоны справочника в отсортированном виде
     }
 }
