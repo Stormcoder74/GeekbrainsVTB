@@ -2,3 +2,112 @@
 Теряев Сергей ДЗ 05
 https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less05
 ================================
+
+package com.geekbrains.teryaevs.task1;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+public class MainApp1 {
+    public static void main(String[] args) {
+        String[] words = {"создать", "массив", "повторяющиеся",
+                "слово", "должны", "встречаться", "повторяющиеся",
+                "слово", "вывести", "список", "список", "слово",
+                "должны", "которых", "состоит", "слово", "список",
+                "считаем", "посчитать", "считаем"};
+
+        System.out.println(new HashSet<>(Arrays.asList(words)));
+
+        Map<String, Integer> uniqueWords = new HashMap<>();
+        for (String word : words) {
+            if (uniqueWords.containsKey(word))
+                uniqueWords.put(word, uniqueWords.get(word) + 1);
+            else
+                uniqueWords.put(word, 1);
+        }
+
+        for (Map.Entry entry : uniqueWords.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+}
+
+package com.geekbrains.teryaevs.task2;
+
+import java.util.*;
+
+public class PhoneBook {
+    private Map<String, Set<String>> map;
+
+    public PhoneBook() {
+        map = new TreeMap<>();
+    }
+
+    public Set<String> get(String name) {
+        return map.get(name);
+    }
+
+    public String put(String name, String phone) {
+        boolean phoneAdded = false;
+        Set<String> phones = get(name);
+
+        if (phones == null) {
+            phones = new TreeSet<>();
+            phoneAdded = phones.add(phone);
+            map.put(name, phones);
+        } else
+            phoneAdded = phones.add(phone);
+
+        if (phoneAdded) {
+            return phone;
+        }
+        return null;
+    }
+
+    public Set<Map.Entry<String, Set<String>>> entrySet(){
+        return map.entrySet();
+    }
+}
+
+package com.geekbrains.teryaevs.task2;
+
+import java.util.Map;
+import java.util.Set;
+
+public class MainApp2 {
+    public static void main(String[] args) {
+        PhoneBook phoneBook = new PhoneBook();
+
+        phoneBook.put("Иванов", "12344561289");
+        phoneBook.put("Петров", "59583657589");
+        phoneBook.put("Сидоров", "89544561289");
+        phoneBook.put("Иванов", "12344561289");
+        phoneBook.put("Петров", "35839328456");
+        phoneBook.put("Петров", "12758483664");
+        phoneBook.put("Васин", "58375768474");
+        phoneBook.put("Борисов", "13858635475");
+
+        String agent = "Иванов";
+        Set<String> agentPhones = phoneBook.get(agent);
+        if (agentPhones != null)
+            for (String phone : agentPhones) {
+                System.out.println(agent + ": " + phone);
+            } // выведет только один телефон, поскольку добавлены одинаковые телефоны
+        System.out.println();
+
+        String neighbour = "Петров";
+        Set<String> neighbourPhones = phoneBook.get(neighbour);
+        if (neighbourPhones != null)
+            for (String phone : phoneBook.get(neighbour)) {
+                System.out.println(neighbour + ": " + phone);
+            } // выведет три добавленных телефона
+        System.out.println();
+
+        for (Map.Entry<String, Set<String>> entry : phoneBook.entrySet())
+            for (String phone : entry.getValue())
+                System.out.println(entry.getKey() + ": " + phone);
+        // выведет все телефоны справочника в отсортированном виде
+    }
+}
