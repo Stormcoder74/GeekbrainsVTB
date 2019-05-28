@@ -28,10 +28,13 @@ public class Box<T extends Fruit> {
     }
 
     public boolean compare(Box<? extends Fruit> another) {
-        return getWeight() - another.getWeight() < 0.0001;
+        return Math.abs(getWeight() - another.getWeight()) < 0.0001;
     }
 
     public void pourIn(Box<T> another) {
+        if (this == another)
+            return;
+
         for (int i = box.size() - 1; i >= 0; i--)
             another.add(box.remove(i));
     }

@@ -1,12 +1,13 @@
 package com.geekbrains.teryaevs.tasks1and2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainApp {
     public static void main(String[] args) {
         String[] array = {"1", "2", "3", "4", "5"};
-        transposition(array, 0, 4);
+        transposition(array, 0, 5);
 
         List<String> list = toArrayList(array);
 
@@ -14,21 +15,13 @@ public class MainApp {
             System.out.println(s);
     }
 
-    private static <E> void transposition(E[] array, int position1, int position2)
-            throws IndexOutOfBoundsException {
-        if (position1 < array.length && position2 < array.length) {
-            E tmp = array[position1];
-            array[position1] = array[position2];
-            array[position2] = tmp;
-            return;
-        }
-        throw new IndexOutOfBoundsException();
+    private static <E> void transposition(E[] array, int position1, int position2) {
+        E tmp = array[position1];
+        array[position1] = array[position2];
+        array[position2] = tmp;
     }
 
-    private static <E> ArrayList<E> toArrayList(E... array) {
-        ArrayList<E> list = new ArrayList<>(array.length);
-        for (E e : array)
-            list.add(e);
-        return list;
+    private static ArrayList toArrayList(Object... array) {
+        return new ArrayList<>(Arrays.asList(array));
     }
 }
