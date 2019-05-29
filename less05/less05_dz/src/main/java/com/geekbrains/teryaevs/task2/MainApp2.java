@@ -1,6 +1,5 @@
 package com.geekbrains.teryaevs.task2;
 
-import java.util.Map;
 import java.util.Set;
 
 public class MainApp2 {
@@ -16,25 +15,17 @@ public class MainApp2 {
         phoneBook.put("Васин", "58375768474");
         phoneBook.put("Борисов", "13858635475");
 
-        String agent = "Иванов";
-        Set<String> agentPhones = phoneBook.get(agent);
+        Set<String> agentPhones = phoneBook.get("Иванов");
         if (agentPhones != null)
             for (String phone : agentPhones) {
-                System.out.println(agent + ": " + phone);
+                System.out.println("Иванов" + ": " + phone);
             } // выведет только один телефон, поскольку добавлены одинаковые телефоны
         System.out.println();
 
-        String neighbour = "Петров";
-        Set<String> neighbourPhones = phoneBook.get(neighbour);
+        Set<String> neighbourPhones = phoneBook.get("Петров");
         if (neighbourPhones != null)
-            for (String phone : phoneBook.get(neighbour)) {
-                System.out.println(neighbour + ": " + phone);
+            for (String phone : neighbourPhones) {
+                System.out.println("Петров" + ": " + phone);
             } // выведет три добавленных телефона
-        System.out.println();
-
-        for (Map.Entry<String, Set<String>> entry : phoneBook.entrySet())
-            for (String phone : entry.getValue())
-                System.out.println(entry.getKey() + ": " + phone);
-        // выведет все телефоны справочника в отсортированном виде
     }
 }

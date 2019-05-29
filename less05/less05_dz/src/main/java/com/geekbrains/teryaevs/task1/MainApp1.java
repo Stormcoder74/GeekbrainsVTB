@@ -1,8 +1,6 @@
 package com.geekbrains.teryaevs.task1;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class MainApp1 {
@@ -13,18 +11,14 @@ public class MainApp1 {
                 "должны", "которых", "состоит", "слово", "список",
                 "считаем", "посчитать", "считаем"};
 
-        System.out.println(new HashSet<>(Arrays.asList(words)));
-
         Map<String, Integer> uniqueWords = new HashMap<>();
-        for (String word : words) {
+        for (String word : words)
             if (uniqueWords.containsKey(word))
                 uniqueWords.put(word, uniqueWords.get(word) + 1);
             else
                 uniqueWords.put(word, 1);
-        }
 
-        for (Map.Entry entry : uniqueWords.entrySet()) {
+        for (Map.Entry entry : uniqueWords.entrySet())
             System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
     }
 }
