@@ -13,10 +13,7 @@ public class MainApp1 {
 
         Map<String, Integer> uniqueWords = new HashMap<>();
         for (String word : words)
-            if (uniqueWords.containsKey(word))
-                uniqueWords.put(word, uniqueWords.get(word) + 1);
-            else
-                uniqueWords.put(word, 1);
+            uniqueWords.put(word, uniqueWords.getOrDefault(word, 0) + 1);
 
         for (Map.Entry entry : uniqueWords.entrySet())
             System.out.println(entry.getKey() + ": " + entry.getValue());
