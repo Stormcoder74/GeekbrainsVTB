@@ -15,17 +15,10 @@ public class MainApp2 {
         phoneBook.put("Васин", "58375768474");
         phoneBook.put("Борисов", "13858635475");
 
-        Set<String> agentPhones = phoneBook.get("Иванов");
-        if (agentPhones != null)
-            for (String phone : agentPhones) {
-                System.out.println("Иванов" + ": " + phone);
-            } // выведет только один телефон, поскольку добавлены одинаковые телефоны
-        System.out.println();
+        for (String phone : phoneBook.get("Иванов"))
+            System.out.println("Иванов" + ": " + phone);
 
-        Set<String> neighbourPhones = phoneBook.get("Петров");
-        if (neighbourPhones != null)
-            for (String phone : neighbourPhones) {
-                System.out.println("Петров" + ": " + phone);
-            } // выведет три добавленных телефона
+        for (String phone : phoneBook.get("Петров"))
+            System.out.println("Петров" + ": " + phone);
     }
 }
