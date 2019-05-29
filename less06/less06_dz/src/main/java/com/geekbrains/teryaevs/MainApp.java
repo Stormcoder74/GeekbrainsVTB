@@ -3,25 +3,29 @@ package com.geekbrains.teryaevs;
 import java.util.Arrays;
 
 public class MainApp {
-    static final int SIZE = 10_000_000;
-    static final int HALF = SIZE / 2;
+    private static final int SIZE = 10_000_000;
+    private static final int HALF = SIZE / 2;
 
-    static class MyThread extends Thread {
+    static class MyThread implements Runnable {
         float[] arr;
+        int offset;
 
-        MyThread(float[] arr) {
+        MyThread(float[] arr, int offset) {
             this.arr = arr;
+            this.offset = offset;
         }
 
         @Override
         public void run() {
-            for (int i = 0; i < HALF; i++)
-                arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) *
-                        Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+            for (int i = 0; i < HALF; i++) {
+                int iOff = i + offset;
+                arr[i] = (float) (arr[i] * Math.sin(0.2f + iOff / 5) *
+                        Math.cos(0.2f + iOff / 5) * Math.cos(0.4f + iOff / 2));
+            }
         }
     }
 
-    static void method1() {
+    private static float[] method1() {
         float[] array = new float[SIZE];
         Arrays.fill(array, 1.0f);
 
@@ -32,10 +36,10 @@ public class MainApp {
                     Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
 
         System.out.println("method1(): " + (System.currentTimeMillis() - startTime) + " мсек.");
-
+        return array;
     }
 
-    static void method2() {
+    private static float[] method2() {
         float[] array = new float[SIZE];
         Arrays.fill(array, 1.0f);
 
@@ -46,8 +50,8 @@ public class MainApp {
         System.arraycopy(array, 0, half1, 0, HALF);
         System.arraycopy(array, HALF, half2, 0, HALF);
 
-        Thread thread1 = new MyThread(half1);
-        Thread thread2 = new MyThread(half2);
+        Thread thread1 = new Thread(new MyThread(half1, 0));
+        Thread thread2 = new Thread(new MyThread(half2, HALF));
         thread1.start();
         thread2.start();
 
@@ -62,13 +66,18 @@ public class MainApp {
         System.arraycopy(half2, 0, array, HALF, HALF);
 
         System.out.println("method2(): " + (System.currentTimeMillis() - startTime) + " мсек.");
+        return array;
     }
 
     public static void main(String[] args) {
-        new Thread(() -> method1()).start();
-        new Thread(() -> method2()).start();
+        float[] arr1 = method1();
+        float[] arr2 = method2();
+        for (int i = 0; i < SIZE; i++) {
+            if (Math.abs(arr1[i] - arr2[i]) > 0.0001) {
+                System.out.println("массивы не эквивалентны");
+                return;
+            }
+        }
+        System.out.println("массивы эквивалентны");
     }
 }
-
-//    method2(): 3268 мсек.
-//    method1(): 8995 мсек.
