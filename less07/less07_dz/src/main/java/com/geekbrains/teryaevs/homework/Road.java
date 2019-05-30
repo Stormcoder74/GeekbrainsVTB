@@ -1,15 +1,9 @@
 package com.geekbrains.teryaevs.homework;
 
 public class Road extends Stage {
-
     public Road(int length) {
         this.length = length;
         this.description = "Дорога " + length + " метров";
-    }
-
-    public Road(int length, Finish finish) {
-        this(length);
-        this.finish = finish;
     }
 
     @Override
