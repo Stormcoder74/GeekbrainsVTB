@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainApp {
-    private static final int NUM_THREADS = 3451;
-    private static final int SIZE = 34_654_737;
-    private static final int PART = SIZE / NUM_THREADS;
+    private static final int NUM_THREADS = 113;
+    private static final int SIZE = 14_654_737;
+
+    private static final int PART = SIZE / NUM_THREADS * NUM_THREADS == SIZE
+                ? SIZE / NUM_THREADS : SIZE / NUM_THREADS + 1;
 
     static class MyThread implements Runnable {
         float[] arr;
@@ -49,7 +51,7 @@ public class MainApp {
 
         ArrayList<Thread> threads = new ArrayList<>(NUM_THREADS);
 
-        for (int i = 0; i < NUM_THREADS + 1; i++) {
+        for (int i = 0; i < NUM_THREADS; i++) {
             Thread thread = new Thread(new MyThread(array, PART * i));
             thread.start();
             threads.add(thread);
@@ -79,6 +81,6 @@ public class MainApp {
     }
 }
 
-//    method1(): 47201 мсек.
-//    method2(): 7722 мсек.
-//    массивы эквивалентны
+//      method1(): 11816 мсек.
+//      method2(): 2099 мсек.    11816/2099 ~ 5,6
+//      массивы эквивалентны
