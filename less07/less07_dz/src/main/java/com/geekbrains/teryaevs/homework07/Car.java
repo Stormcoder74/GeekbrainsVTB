@@ -1,4 +1,4 @@
-package com.geekbrains.teryaevs.homework;
+package ru.geekbrains.homework5;
 
 public class Car implements Runnable {
     private static int CARS_COUNT;
@@ -30,7 +30,7 @@ public class Car implements Runnable {
     public void run() {
         try {
             System.out.println(this.name + " готовится");
-            Thread.sleep(500 + (int) (Math.random() * 800));
+            Thread.sleep(500 + (int)(Math.random() * 800));
             System.out.println(this.name + " готов");
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,3 +40,4 @@ public class Car implements Runnable {
         }
     }
 }
+
