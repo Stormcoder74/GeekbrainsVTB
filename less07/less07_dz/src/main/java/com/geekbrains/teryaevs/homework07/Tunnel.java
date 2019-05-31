@@ -1,4 +1,4 @@
-package ru.geekbrains.homework5;
+package com.geekbrains.teryaevs.homework07;
 
 public class Tunnel extends Stage {
     public Tunnel() {
