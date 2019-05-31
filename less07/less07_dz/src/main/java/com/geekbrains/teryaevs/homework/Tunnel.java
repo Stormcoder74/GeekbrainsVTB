@@ -2,13 +2,15 @@ package com.geekbrains.teryaevs.homework;
 
 import java.util.concurrent.Semaphore;
 
+import static com.geekbrains.teryaevs.homework.MainClass.CARS_COUNT;
+
 public class Tunnel extends Stage {
     private Semaphore semaphore;
 
     public Tunnel() {
         this.length = 80;
         this.description = "Тоннель " + length + " метров";
-        this.semaphore = new Semaphore(2);
+        this.semaphore = new Semaphore(CARS_COUNT / 2);
     }
 
     @Override
@@ -22,8 +24,8 @@ public class Tunnel extends Stage {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                semaphore.release();
                 System.out.println(c.getName() + " закончил этап: " + description);
+                semaphore.release();
             }
         } catch (Exception e) {
             e.printStackTrace();
