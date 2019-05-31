@@ -1,0 +1,1290 @@
+public class Main {
+static final int SIZE = 10000000; static final int HALF = SIZE / 2:
+
+
+public static void main(String[] args) {
+    float[] arr1 = methodFirst();
+    float[] arr2 = methodSecond();
+
+    if (compareAr(arr1, arr2)) {
+        System.out.println("Массивы равны.");
+    } else {
+        System.out.println("Массивы не равны.");
+    }
+}
+
+public static float[] methodFirst() {
+
+    float[] arr = new float[SIZE];
+    Arrays.fill(arr, 0, SIZE, 1.0f);
+    long a = System.currentTimeMillis();
+    arr = fillArray(arr);
+    System.out.println("Время работы первого метода: " + (System.currentTimeMillis() - a));
+    return arr;
+}
+
+public static float[] methodSecond() {
+    float[] arr = new float[SIZE];
+    long a = System.currentTimeMillis();
+    Thread thread1 = new Thread(new Runnable() {
+        @Override
+        public void run() {
+
+            System.out.println("Поток 1 старт");
+            float[] a1 = new float[HALF];
+            System.arraycopy(arr, 0, a1, 0, HALF);
+            Arrays.fill(a1, 0, HALF, 1.0f);
+            a1 = fillArray(a1);
+            System.arraycopy(a1, 0, arr, 0, HALF);
+            System.out.println("Поток 1 энд");
+        }
+    });
+    Thread thread2 = new Thread(new Runnable() {
+        @Override
+        public void run() {
+
+            System.out.println("Поток 2 старт");
+            float[] a2 = new float[HALF];
+            System.arraycopy(arr, HALF, a2, 0, HALF);
+            Arrays.fill(a2, 0, HALF, 1.0f);
+            a2 = fillArray(a2);
+            System.arraycopy(a2, 0, arr, HALF, HALF);
+            System.out.println("Поток 2 энд ");
+        }
+    });
+
+    thread1.start();
+    thread2.start();
+    try {
+
+        thread1.join();
+
+    } catch (InterruptedException e) {
+
+        e.printStackTrace();
+    }
+
+    try {
+
+        thread2.join();
+
+    } catch (InterruptedException e) {
+
+        e.printStackTrace();
+    }
+    System.out.println("Время работы второго метода :" + (System.currentTimeMillis() - a));
+    return arr;
+}
+
+public static float[] fillArray(float[] arr) {
+    for (int i = 0; i < arr.length; i++) {
+        arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+    }
+    return arr;
+}
+
+public static boolean compareAr(float[] a1, float[] a2) {
+    for (int i = 0; i < a1.length; i++) {
+        if(Math.abs(Math.abs(a1[i])-Math.abs(a2[i])) > 0.001)
+
+            return false;
+        }
+    return true;
+}
+
+}
+===
+package com.geekbrains.lesson6;
+
+public class homework {
+    public static void main(String[] args) {
+        method1();
+        method2();
+    }
+    static final int SIZE = 10000000;
+    static final int HALF = SIZE/2;
+
+    static void method1(){
+        float [] arr = new float[SIZE];
+        for (int i = 0; i <arr.length ; i++) {
+            arr[i] = 1;
+        }
+        long timeStart = System.currentTimeMillis();
+        for (int i = 0; i <arr.length ; i++) {
+            arr[i] = (float)(arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5)
+                    * Math.cos(0.4f + i / 2));
+        }
+        long timeEnd = System.currentTimeMillis();
+
+        System.out.println("Время выполнения первого метода - " + (timeEnd - timeStart));
+//        for (int i = 0; i <arr.length ; i++) {
+//            System.out.println("Метод первый, ячейка " + i + "значение " + arr[i]);
+//        }
+
+
+    }
+
+    static void  method2(){
+        float [] arr = new float[SIZE];
+        for (int i = 0; i <arr.length ; i++) {
+            arr[i] = 1;
+        }
+        float [] halfArr1 = new float[HALF];
+        float [] halfArr2 = new float[HALF];
+        long timeStart = System.currentTimeMillis();
+        Thread thread1 = new Thread(()-> {
+                System.arraycopy(arr, 0, halfArr1, 0, HALF);
+                for (int i = 0; i < halfArr1.length; i++) {
+                    halfArr1[i] = (float) (halfArr1[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5)
+                            * Math.cos(0.4f + i / 2));
+                }
+                System.arraycopy(halfArr1, 0, arr, 0, HALF);
+        });
+        Thread thread2 = new Thread(()-> {
+                System.arraycopy(arr, HALF, halfArr2, 0, HALF);
+                for (int i = 0; i < halfArr2.length; i++) {
+                    halfArr2[i] = (float) (halfArr2[i] * Math.sin(0.2f + (i+HALF) / 5) * Math.cos(0.2f + (i+HALF) / 5)
+                            * Math.cos(0.4f + (i+HALF) / 2));
+                }
+                System.arraycopy(halfArr2, 0, arr, HALF, HALF);
+        });
+        try {
+            thread1.start();
+            thread2.start();
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        long timeEnd = System.currentTimeMillis();
+        System.out.println("Время выполнения второго метода - " + (timeEnd - timeStart));
+//        for (int i = 0; i <arr.length ; i++) {
+//            System.out.println("Метод второй, ячейка " + i + " значение " + arr[i]);
+//        }
+    }
+}
+===
+package com.geekbrains.work6;
+
+public class PoolOfNumber {
+    static final int size = 10000000;
+    static final int h = size / 2;
+
+    public void metodOne()
+    {
+        float[] arr = new float[size];
+        for (int i = 0; i < arr.length; i++) arr[i] = 1;
+        long a = System.currentTimeMillis();
+        for (int i = 0; i < arr.length; i++)
+            arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+        System.out.printf("Время работы первого метода = %d",(System.currentTimeMillis() - a));
+        System.out.println();
+    }
+
+    public void metodTwo()
+    {
+        float[] arr = new float[size];
+        for (int i = 0; i < arr.length; i++) arr[i] = 1;
+        final long a = System.currentTimeMillis();
+
+        final float[] a1 = new float[h];
+        final float[] a2 = new float[h];
+        System.arraycopy(arr, 0, a1, 0, h);
+        System.arraycopy(arr, h, a2, 0, h);
+        System.out.printf("Время разбивки = %d, ",(System.currentTimeMillis() - a));
+
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < a1.length; i++)
+                    a1[i] = (float) (a1[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+                System.out.printf("Время обработки первого потока = %d, ",(System.currentTimeMillis() - a));
+
+            }
+        });
+        Thread t2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < a2.length; i++)
+                    a2[i] = (float) (a2[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+                System.out.printf("Время обработки второго потока = %d, ",(System.currentTimeMillis() - a));
+            }
+        });
+
+        t1.start();
+        t2.start();
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.arraycopy(a1, 0, arr, 0, h);
+        System.arraycopy(a2, 0, arr, h, h);
+        System.out.printf("Время склейки = %d, ",(System.currentTimeMillis() - a));
+        System.out.printf("Время работы второго метода = %d.",(System.currentTimeMillis() - a));
+        System.out.println();
+    }
+
+
+
+    public static void main(String[] args) {
+        PoolOfNumber pool = new PoolOfNumber();
+        System.out.println("Первый метод");
+        pool.metodOne();
+        System.out.println("Второй метод");
+        pool.metodTwo();
+
+    }
+}
+===
+package com.geekbrains.vtb.lesson6;
+
+import java.util.Arrays;
+
+public class Main {
+    private static final int SIZE = 10000000;
+    private static final int HALF = SIZE / 2;
+    private static final float[] array1 = new float[SIZE];
+    private static final float[] array2 = new float[SIZE];
+
+    public static void main(String[] args) {
+        methodWithOneThread(array1);
+        methodWithTwoThread(array2);
+        if (Arrays.equals(array1, array2))
+            System.out.println("Массивы равны");
+        else
+            System.out.println("Массивы не равны");
+    }
+
+    private static void methodWithOneThread(float[] array) {
+        for (int i = 0; i < array.length; i++) {
+            array[i] = 1f;
+        }
+        long a = System.currentTimeMillis();
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (float) (array[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+        }
+        System.out.println("Время работы метода с 1 потоком: " + (System.currentTimeMillis() - a));
+    }
+
+    private static void methodWithTwoThread(float[] array) {
+        final float[] a1 = new float[HALF];
+        final float[] a2 = new float[HALF];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = 1f;
+        }
+        final long a = System.currentTimeMillis();
+        System.arraycopy(array, 0, a1, 0, HALF);
+        System.arraycopy(array, HALF, a2, 0, HALF);
+        ThreadArrayFill thread1 = new ThreadArrayFill(a1, 0);
+        ThreadArrayFill thread2 = new ThreadArrayFill(a2, HALF);
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.arraycopy(a1, 0, array, 0, HALF);
+        System.arraycopy(a2, 0, array, HALF, HALF);
+        System.out.println("Время работы метода с 2 потоками: " + (System.currentTimeMillis() - a));
+    }
+}
+
+package com.geekbrains.vtb.lesson6;
+
+public class ThreadArrayFill extends Thread {
+    private float[] array;
+    private int startOfRecording;
+
+    ThreadArrayFill(float[] array, int startOfRecording) {
+        this.array = array;
+        this.startOfRecording = startOfRecording;
+        start();
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (float) (array[i] * Math.sin(0.2f + (i + startOfRecording) / 5) *
+                    Math.cos(0.2f + (i + startOfRecording) / 5) * Math.cos(0.4f + (i + startOfRecording) / 2));
+        }
+    }
+}
+===
+================================
+Теряев Сергей ДЗ 06
+https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less06
+================================
+
+// алгоритм без разделения массива работающий с любым размером
+// массива и количеством потоков (в разумных пределах, конечно)
+
+package com.geekbrains.teryaevs;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class MainApp {
+    private static final int NUM_THREADS = 113;
+    private static final int SIZE = 14_654_737;
+
+    private static final int PART = SIZE / NUM_THREADS * NUM_THREADS == SIZE
+                ? SIZE / NUM_THREADS : SIZE / NUM_THREADS + 1;
+
+    static class MyThread implements Runnable {
+        float[] arr;
+        int offset;
+
+        MyThread(float[] arr, int offset) {
+            this.arr = arr;
+            this.offset = offset;
+        }
+
+        @Override
+        public void run() {
+            int end = Math.min(offset + PART, SIZE);
+            for (int i = offset; i < end; i++) {
+                arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) *
+                        Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+            }
+        }
+    }
+
+    private static float[] method1() {
+        float[] array = new float[SIZE];
+        Arrays.fill(array, 1.0f);
+
+        long startTime = System.currentTimeMillis();
+
+        for (int i = 0; i < SIZE; i++)
+            array[i] = (float) (array[i] * Math.sin(0.2f + i / 5) *
+                    Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+
+        System.out.println("method1(): " + (System.currentTimeMillis() - startTime) + " мсек.");
+        return array;
+    }
+
+    private static float[] method2() {
+        float[] array = new float[SIZE];
+        Arrays.fill(array, 1.0f);
+
+        long startTime = System.currentTimeMillis();
+
+        ArrayList<Thread> threads = new ArrayList<>(NUM_THREADS);
+
+        for (int i = 0; i < NUM_THREADS; i++) {
+            Thread thread = new Thread(new MyThread(array, PART * i));
+            thread.start();
+            threads.add(thread);
+        }
+
+        try {
+            for (Thread thread : threads) {
+                thread.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("method2(): " + (System.currentTimeMillis() - startTime) + " мсек.");
+        return array;
+    }
+
+    public static void main(String[] args) {
+        float[] arr1 = method1();
+        float[] arr2 = method2();
+        for (int i = 0; i < SIZE; i++) {
+            if (Math.abs(arr1[i] - arr2[i]) > 0.0001) {
+                System.out.println("массивы не эквивалентны " + i);
+                return;
+            }
+        }
+        System.out.println("массивы эквивалентны");
+    }
+}
+
+//      method1(): 11816 мсек.
+//      method2(): 2099 мсек.    11816/2099 ~ 5,6
+//      массивы эквивалентны
+
+---------------------------
+// менее гибкий и эффективный алгоритм в соответствии с ДЗ
+// с разделением массивов и склейкой
+
+package com.geekbrains.teryaevs;
+
+import java.util.Arrays;
+
+public class MainApp {
+    private static final int SIZE = 10_000_000;
+    private static final int HALF = SIZE / 2;
+
+    static class MyThread implements Runnable {
+        float[] arr;
+        int offset;
+
+        MyThread(float[] arr, int offset) {
+            this.arr = arr;
+            this.offset = offset;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < HALF; i++) {
+                int iOff = i + offset;
+                arr[i] = (float) (arr[i] * Math.sin(0.2f + iOff / 5) *
+                        Math.cos(0.2f + iOff / 5) * Math.cos(0.4f + iOff / 2));
+            }
+        }
+    }
+
+    private static float[] method1() {
+        float[] array = new float[SIZE];
+        Arrays.fill(array, 1.0f);
+
+        long startTime = System.currentTimeMillis();
+
+        for (int i = 0; i < SIZE; i++)
+            array[i] = (float) (array[i] * Math.sin(0.2f + i / 5) *
+                    Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+
+        System.out.println("method1(): " + (System.currentTimeMillis() - startTime) + " мсек.");
+        return array;
+    }
+
+    private static float[] method2() {
+        float[] array = new float[SIZE];
+        Arrays.fill(array, 1.0f);
+
+        long startTime = System.currentTimeMillis();
+
+        float[] half1 = new float[HALF];
+        float[] half2 = new float[HALF];
+        System.arraycopy(array, 0, half1, 0, HALF);
+        System.arraycopy(array, HALF, half2, 0, HALF);
+
+        Thread thread1 = new Thread(new MyThread(half1, 0));
+        Thread thread2 = new Thread(new MyThread(half2, HALF));
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.arraycopy(half1, 0, array, 0, HALF);
+        System.arraycopy(half2, 0, array, HALF, HALF);
+
+        System.out.println("method2(): " + (System.currentTimeMillis() - startTime) + " мсек.");
+        return array;
+    }
+
+    public static void main(String[] args) {
+        float[] arr1 = method1();
+        float[] arr2 = method2();
+        for (int i = 0; i < SIZE; i++) {
+            if (Math.abs(arr1[i] - arr2[i]) > 0.0001) {
+                System.out.println("массивы не эквивалентны");
+                return;
+            }
+        }
+        System.out.println("массивы эквивалентны");
+    }
+}
+
+//  method1(): 8972 мсек.
+//  method2(): 5966 мсек.       8972/5966 ~ 1,5
+//  массивы эквивалентны
+===
+package ru.blinov.lesson06;
+
+public class Main06 {
+    public static void main(String[] args) {
+        final int ARRAY_SIZE = 10_000_000;
+        final int THREADS_COUNT = 4;
+
+        if (ARRAY_SIZE % THREADS_COUNT != 0) throw new ArithmeticException("ARRAY_SIZE должно делиться на THREADS_COUNT без остатка!");
+        final int PART_SIZE = ARRAY_SIZE / THREADS_COUNT;
+
+        float[] arrMain = new float[ARRAY_SIZE];
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            arrMain[i] = 1;
+        }
+
+        long time = System.currentTimeMillis();
+
+        float[][] arrTemporary = new float[THREADS_COUNT][PART_SIZE];
+        Thread[] threads = new Thread[THREADS_COUNT];
+
+        for (int i = 0; i < THREADS_COUNT; i++) {
+            System.arraycopy(arrMain, PART_SIZE * i, arrTemporary[i], 0, PART_SIZE);
+
+//  Это для передачи в лямбду (можно и без final, т.к. появилось effectively final).
+            final int u = i;
+
+            threads[i] = new Thread(() -> {
+                int z = u * PART_SIZE;
+                for (int j = 0; j < PART_SIZE; j++, z++) {
+                    arrTemporary[u][j] = (float) (arrTemporary[u][j] * Math.sin(0.2f + z / 5) * Math.cos(0.2f + z / 5) *
+                            Math.cos(0.4f + z / 2));
+                }
+
+//  Специально попробывал тут склеить, разницы никакой нет в итоговом времени.
+//                System.arraycopy(arrTemporary[u], 0, arrMain, u * PART_SIZE, PART_SIZE);
+
+            });
+            threads[i].start();
+        }
+        try {
+            for (int i = 0; i < THREADS_COUNT; i++) {
+                threads[i].join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+//  Что в потоке, что здесь время исполнения одинаковое.
+        for (int i = 0; i < THREADS_COUNT; i++) {
+            System.arraycopy(arrTemporary[i], 0, arrMain, i * PART_SIZE, PART_SIZE);
+        }
+
+        System.out.println("time: " + (System.currentTimeMillis() - time) / 1000f + "s");
+    }
+}
+===
+package com.geekbrains.homework6;
+
+public class Main {
+
+    static final int SIZE = 10_000_000;
+
+    static int HALF = SIZE / 2;
+
+    public static void main(String[] args) {
+
+        oneThread();
+
+        threads();
+
+    }
+
+    public static void oneThread() {
+
+        float[] arr = new float[SIZE];
+
+        for (int i = 0; i < arr.length; i++) {
+
+            arr[i] = i;
+
+        }
+
+        long time = System.currentTimeMillis();
+
+        formula(arr, 0);
+
+        System.out.println("oneThread: " + (System.currentTimeMillis() - time));
+
+    }
+
+    public static void threads() {
+
+        float[] arr = new float[SIZE];
+
+        for (int i = 0; i < arr.length; i++) {
+
+            arr[i] = i;
+
+        }
+
+        formula(arr, 1);
+
+        final float[] halfOne = new float[HALF];
+
+        final float[] halfTwo = new float[HALF];
+
+        System.arraycopy(arr, 0, halfOne, 0, HALF);
+
+        System.arraycopy(arr, HALF, halfTwo, 0, HALF);
+
+        long timeOne = System.currentTimeMillis();
+
+        Thread threadOne = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                formula(halfOne, 0);
+
+            }
+
+        });
+
+        Thread threadTwo = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                formula(halfTwo, HALF);
+
+            }
+
+        });
+
+        try {
+
+            threadOne.run();
+
+            threadTwo.run();
+
+            threadOne.join();
+
+            threadTwo.join();
+
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+
+        }
+
+        System.arraycopy(halfOne, 0, arr, 0, HALF);
+
+        System.arraycopy(halfTwo, 0, arr, HALF, HALF);
+
+        System.out.println("threads: " + (System.currentTimeMillis() - timeOne));
+
+
+    }
+
+    public static void formula(float[] arr, int offset) {
+
+        for (int i = 0; i < arr.length; i++) {
+
+            int j = offset + i;
+
+            arr[i] = (float) (arr[i] * Math.sin(0.2f + j / 5) * Math.cos(0.2f + j / 5) * Math.cos(0.4f + j / 2));
+
+        }
+
+    }
+
+}
+===
+package com.geekbrains.lesson6;
+
+
+import java.util.Arrays;
+
+public class Main {
+    static final int SIZE = 10000000;
+    static final int HALF = SIZE / 2;
+
+    public class MyThread extends Thread {
+        private float[] arr;
+        private int num;
+
+        public MyThread(float[] arr, int num) {
+            this.arr = arr;
+            this.num = num;
+        }
+
+        @Override
+        public void run() {
+            calculateTwoThread(arr, num);
+        }
+    }
+
+    public static void main(String[] args) {
+        Main main = new Main();
+        float[] arrOneThread = new float[SIZE];
+        float[] arrTwoThread = new float[SIZE];
+        main.mainThread(arrOneThread);
+        main.twoThread(arrTwoThread);
+        System.out.println(Arrays.equals(arrOneThread, arrTwoThread));
+    }
+
+    public void mainThread(float[] arr) {
+        fillArray(arr);
+        calculate(arr);
+    }
+
+    public void twoThread(float[] arr) {
+        fillArray(arr);
+        float[] arr1 = new float[HALF];
+        float[] arr2 = new float[HALF];
+
+        long time = System.currentTimeMillis();
+        System.arraycopy(arr, 0, arr1, 0, HALF);
+        System.arraycopy(arr, HALF, arr2, 0, HALF);
+        System.out.println(System.currentTimeMillis() - time);
+
+        Thread thread1 = new Thread(new MyThread(arr1, 0));
+        Thread thread2 = new Thread(new MyThread(arr2, HALF));
+
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        time = System.currentTimeMillis();
+        System.arraycopy(arr1, 0, arr, 0, HALF);
+        System.arraycopy(arr2, 0, arr, HALF, HALF);
+        System.out.println(System.currentTimeMillis() - time);
+    }
+
+    public void fillArray(float[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = 1;
+        }
+    }
+
+    public void calculate(float[] arr) {
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+        }
+        System.out.println(System.currentTimeMillis() - time);
+    }
+
+    public synchronized void calculateTwoThread(float[] arr, int num) {
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = (float) (arr[i] * Math.sin(0.2f + (i + num) / 5) * Math.cos(0.2f + (i + num) / 5) * Math.cos(0.4f + (i + num) / 2));
+        }
+        System.out.println(System.currentTimeMillis() - time);
+    }
+}
+===
+package com.medvedev;
+
+public class App {
+    public static void main(String[] args) {
+        create1();
+        create2();
+    }
+
+
+    static void create1() {
+        final int SIZE = 10000000;
+        final int HALF = SIZE / 2;
+        float[] arr = new float[SIZE];
+
+        for (int i = 0; i < SIZE; i++) {
+            arr[i] = 1;
+        }
+
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < SIZE; i++) {
+            arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+        }
+        System.out.println("Время выполнения " + ((System.currentTimeMillis() - time)) + " мс");
+
+
+    }
+
+
+    static void create2() {
+        final int SIZE = 10000000;
+        final int HALF = SIZE / 2;
+        float[] arr = new float[SIZE];
+
+        for (int i = 0; i < SIZE; i++) {
+            arr[i] = 1;
+        }
+
+        float[] tempArr = new float[HALF];
+        float[] tempArr2 = new float[HALF];
+
+        Thread th1 = new Thread(() -> {
+            for (int j = 0; j < tempArr.length; j++) {
+                tempArr[j] = (float) (tempArr[j] * Math.sin(0.2f + j / 5) * Math.cos(0.2f + j / 5) * Math.cos(0.4f + j / 2));
+            }
+
+        });
+
+        Thread th2 = new Thread(() -> {
+            for (int j = 0; j < tempArr2.length; j++) {
+                tempArr2[j] = (float) (tempArr2[j] * Math.sin(0.2f + j / 5) * Math.cos(0.2f + j / 5) * Math.cos(0.4f + j / 2));
+            }
+
+        });
+
+
+        long time = System.currentTimeMillis();
+
+        System.arraycopy(arr, 0, arr, 0, HALF);
+        System.arraycopy(arr, HALF, arr, 0, HALF);
+
+
+        th1.start();
+        th2.start();
+        try {
+            th1.join();
+            th2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.arraycopy(arr, 0, arr, 0, HALF);
+        System.arraycopy(arr, 0, arr, HALF, HALF);
+
+
+        System.out.println("Время выполнения " + ((System.currentTimeMillis() - time)) + " мс");
+
+
+    }
+}
+===
+package ru.geekBrains.titov.lesson6;
+
+public class MainApp {
+    static final int SIZE = 10000000;
+    static final int HALF = SIZE / 2;
+    static float[] arrayFirst;
+    static float[] arraySecond;
+
+
+    static float[] addData(float[] array) {
+        for (int i = 0; i < array.length; i++) {
+            array[i] = 1;
+        }
+        return array;
+    }
+
+    static boolean compareTwoFloatArrays(float[] array1, float[] array2) {
+        if (array1 == null || array2 == null || array1.length != array2.length) {
+            return false;
+        }
+        for (int i = 0; i < array1.length; i++) {
+
+            if (Math.abs(array1[i] - array2[i]) >= 0.001) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    static float[] calculate(float[] array, int koef) {
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (float) (array[i] * Math.sin(0.2f + (i + koef) / 5) * Math.cos(0.2f + (i + koef) / 5) *
+                    Math.cos(0.4f + (i + koef) / 2));
+        }
+        return array;
+    }
+
+
+    static void firstCalculate() {
+
+        float[] arr = new float[SIZE];
+        long a = System.currentTimeMillis();
+        addData(arr);
+        arrayFirst = calculate(arr, 0);
+        System.out.println(System.currentTimeMillis() - a);
+    }
+
+
+    static void secondCalculate() throws InterruptedException {
+
+        float[] a1 = new float[HALF];
+        float[] a2 = new float[HALF];
+        arraySecond = new float[SIZE];
+        addData(arraySecond);
+
+        long a = System.currentTimeMillis();
+        System.arraycopy(arraySecond, 0, a1, 0, HALF);
+        System.arraycopy(arraySecond, HALF, a2, 0, HALF);
+
+        Thread thread1 = new Thread(() -> {
+            calculate(a1, 0);
+        });
+        Thread thread2 = new Thread(() -> {
+            calculate(a2, HALF);
+        });
+        thread1.start();
+        thread2.start();
+        thread1.join();
+        thread2.join();
+
+        System.arraycopy(a1, 0, arraySecond, 0, HALF);
+        System.arraycopy(a2, 0, arraySecond, HALF, HALF);
+        System.out.println(System.currentTimeMillis() - a);
+
+    }
+
+
+    public static void main(String[] args) {
+
+        firstCalculate();
+        try {
+            secondCalculate();
+        } catch (InterruptedException e) {
+            System.out.println("РџСЂРѕРёР·РѕС€Р»Рѕ РЅРµРѕР¶РёРґР°РЅРЅРѕРµ РїСЂРµСЂС‹РІР°РЅРёРµ РїР°СЂР°Р»РµР»СЊРЅРѕРіРѕ РїРѕС‚РѕРєР°");
+        }
+        System.out.println(compareTwoFloatArrays(arrayFirst, arraySecond));
+
+    }
+}
+===
+import java.util.ArrayList;
+import java.util.concurrent.*;
+
+public class MainApp {
+
+    private static final int SIZE = 10000000;
+    private static final int HALF = SIZE / 2;
+
+    public static void main(String[] args) {
+
+        /* In one thread */
+        float[] oneThreadArray = new float[SIZE];
+        arrayInitWithOne(oneThreadArray);
+
+        long nttBeforeTime = System.currentTimeMillis();
+        recountingArray(oneThreadArray, 0);
+        System.out.println("В одном потоке: " + (System.currentTimeMillis() - nttBeforeTime));
+
+        /* In two threads */
+        float[] twoThreadArray = new float[SIZE];
+        arrayInitWithOne(twoThreadArray);
+
+        long ttBeforeTime = System.currentTimeMillis();
+        threadsTest(twoThreadArray);
+        System.out.println("В " + SIZE / HALF + " потоках: " + (System.currentTimeMillis() - ttBeforeTime));
+
+        if (checkArraysEquals(oneThreadArray, twoThreadArray) == 0)
+            System.out.println("Сумма значений получившихся массивов равна");
+
+    }
+
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
+    private static void recountingArray(float[] array, int index) {
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (float) (array[i] * Math.sin(0.2f + (i + index) / 5) * Math.cos(0.2f + (i + index) / 5) * Math.cos(0.4f + (i + index) / 2));
+        }
+    }
+
+    private static void threadsTest(float[] array) {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ArrayList<Future> futures = new ArrayList<>();
+
+        for (int i = 0; i < SIZE / HALF; i++) {
+            int startIndex = HALF * i;
+            futures.add(executorService.submit(() -> {
+                float[] threadArr = new float[HALF];
+                System.arraycopy(array, startIndex, threadArr, 0, HALF);
+                recountingArray(threadArr, startIndex);
+                return threadArr;
+            }));
+        }
+
+        try {
+            for (int i = 0; i < SIZE / HALF; i++) System.arraycopy(futures.get(i).get(), 0, array, HALF * i, HALF);
+            executorService.shutdown();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static byte checkArraysEquals(float[] arr0, float[] arr1) {
+        if (getSum(arr0) - getSum(arr1) < -0.0001) {
+            return -1;
+        } else if (getSum(arr0) - getSum(arr1) > 0.0001) {
+            return 1;
+        } else return 0;
+    }
+
+    private static float getSum(float[] arr) {
+        float result = 0f;
+        for (Float f : arr) {
+            result += f;
+        }
+        return result;
+    }
+
+    private static void arrayInitWithOne(float[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = 1f;
+        }
+    }
+}
+
+import java.util.ArrayList;
+import java.util.concurrent.*;
+
+public class MainApp {
+
+    private static final int SIZE = 10000001;
+    private static final int NUMOFTHREADS = 7;
+
+    public static void main(String[] args) {
+
+        /* In one thread */
+        float[] oneThreadArray = new float[SIZE];
+        arrayInitWithOne(oneThreadArray);
+
+        long nttBeforeTime = System.currentTimeMillis();
+        recountingArray(oneThreadArray, 0);
+        System.out.println("В одном потоке: " + (System.currentTimeMillis() - nttBeforeTime));
+
+        /* In few threads */
+        float[] twoThreadArray = new float[SIZE];
+        arrayInitWithOne(twoThreadArray);
+
+        long ttBeforeTime = System.currentTimeMillis();
+        threadsTest(twoThreadArray);
+        System.out.println("В " + NUMOFTHREADS + " потоках: " + (System.currentTimeMillis() - ttBeforeTime));
+
+        if (checkArraysEquals(oneThreadArray, twoThreadArray) == 0) System.out.println("Сумма значений получившихся массивов равна");
+
+    }
+
+    private static void recountingArray(float[] array, int index) {
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (float) (array[i] * Math.sin(0.2f + (i + index) / 5f) * Math.cos(0.2f + (i + index) / 5f) * Math.cos(0.4f + (i + index) / 2f));
+        }
+    }
+
+    private static void threadsTest(float[] array) {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(NUMOFTHREADS);
+        ArrayList<Future<float[]>> futures = new ArrayList<>();
+
+        final int numOfRecords = array.length / NUMOFTHREADS;
+        int modulo = array.length % NUMOFTHREADS + numOfRecords;
+
+        for (int i = 0; i < NUMOFTHREADS; i++) {
+            int startIndex = numOfRecords * i;
+            int length = numOfRecords;
+            if (i == NUMOFTHREADS - 1) {
+                length = modulo;
+            }
+            int finalLength = length;
+            futures.add(executorService.submit(() -> {
+                float[] threadArr = new float[finalLength];
+                System.arraycopy(array, startIndex, threadArr, 0, finalLength);
+                recountingArray(threadArr, startIndex);
+                return threadArr;
+            }));
+        }
+
+        for (int i = 0; i < NUMOFTHREADS; i++) {
+            try {
+                float[] fArr = futures.get(i).get();
+                System.arraycopy(fArr, 0, array, numOfRecords * i, fArr.length);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        executorService.shutdown();
+    }
+
+    private static byte checkArraysEquals(float[] arr0, float[] arr1) {
+        if (getSum(arr0) - getSum(arr1) < -0.0001) {
+            return -1;
+        } else if (getSum(arr0) - getSum(arr1) > 0.0001) {
+            return 1;
+        } else return 0;
+    }
+
+    private static float getSum(float[] arr) {
+        float result = 0f;
+        for (Float f : arr) {
+            result += f;
+        }
+        return result;
+    }
+
+    private static void arrayInitWithOne(float[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = 1f;
+        }
+    }
+}
+
+import java.util.ArrayList;
+import java.util.concurrent.*;
+
+public class MainApp {
+
+    private static final int SIZE = 16200111;
+    private static final int NUMOFTHREADS = 8;
+
+    public static void main(String[] args) {
+
+        /* In one thread */
+        float[] oneThreadArray = new float[SIZE];
+        arrayInitWithOne(oneThreadArray);
+
+        long nttBeforeTime = System.currentTimeMillis();
+        recountingArray(oneThreadArray, 0, oneThreadArray.length);
+        System.out.println("В одном потоке: " + (System.currentTimeMillis() - nttBeforeTime));
+
+        /* In few threads */
+        float[] twoThreadArray = new float[SIZE];
+        arrayInitWithOne(twoThreadArray);
+
+        long ttBeforeTime = System.currentTimeMillis();
+        threadsTest(twoThreadArray);
+        System.out.println("В " + NUMOFTHREADS + " потоках: " + (System.currentTimeMillis() - ttBeforeTime));
+
+        if (checkArraysEquals(oneThreadArray, twoThreadArray) == 0)
+            System.out.println("Сумма значений получившихся массивов равна");
+
+    }
+
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
+    private static void recountingArray(float[] array, int startIndex, int numOfRecords) {
+        for (int i = startIndex; i < startIndex + numOfRecords; i++) {
+            float calculatedNumber = (float) (array[i] * Math.sin(0.2f + (i) / 5) * Math.cos(0.2f + (i) / 5) * Math.cos(0.4f + (i) / 2));
+            writeInArr(array, i, calculatedNumber);
+        }
+    }
+
+    private static synchronized void writeInArr(float[] arr, int position, float calculatedNumber) {
+        arr[position] = calculatedNumber;
+    }
+
+    private static void threadsTest(float[] array) {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(NUMOFTHREADS);
+        ArrayList<Future> futures = new ArrayList<>();
+
+        int numOfRecords = array.length / NUMOFTHREADS;
+
+        for (int i = 0; i < NUMOFTHREADS; i++) {
+            int startID = numOfRecords * i;
+            int length = numOfRecords;
+            if (i == NUMOFTHREADS - 1) {
+                length = array.length - startID;
+            }
+            int finalLength = length;
+            futures.add(executorService.submit(() -> recountingArray(array, startID, finalLength)));
+        }
+
+        try {
+            for (Future f : futures) {
+                f.get();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        executorService.shutdown();
+    }
+
+    private static byte checkArraysEquals(float[] arr0, float[] arr1) {
+        if (getSum(arr0) - getSum(arr1) < -0.0001) {
+            return -1;
+        } else if (getSum(arr0) - getSum(arr1) > 0.0001) {
+            return 1;
+        } else return 0;
+    }
+
+    private static float getSum(float[] arr) {
+        float result = 0f;
+        for (Float f : arr) {
+            result += f;
+        }
+        return result;
+    }
+
+    private static void arrayInitWithOne(float[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = 1f;
+        }
+    }
+}
+===
+package com.geekbrains.lesson6;
+
+public class Loader
+{
+    static final int SIZE = 10000000;
+    static final int HALF = SIZE / 2;
+    static float[] arr =  new float[SIZE];
+
+    public static void main(String[] args) throws InterruptedException
+    {
+        methodOne(arr);
+        methodTwo(arr);
+    }
+
+    public static void methodOne(float[] arr)
+    {
+        for (int i = 0; i < arr.length; i++)
+        {
+            arr[i] = 1;
+        }
+
+        long start = System.currentTimeMillis();
+
+        for (int i = 0; i < arr.length; i++)
+        {
+            arr[i] = (float)(arr[i] * Math.sin (0.2f + i / 5) * Math.cos (0.2f + i / 5) *
+                    Math.cos (0.4f + i / 2));
+        }
+        System.out.println("Время работы 1 метода - " + ((System.currentTimeMillis() - start) / 1000)
+                + " сек.");
+    }
+
+    public static void methodTwo(float[] arr) throws InterruptedException
+    {
+        for (int i = 0; i < arr.length; i++)
+        {
+            arr[i] = 1;
+        }
+
+        float[] firstHalf = new float[HALF];
+        float[] secondHalf = new float[HALF];
+        
+        long start = System.currentTimeMillis();
+
+        System.arraycopy(arr, 0, firstHalf, 0, 5);
+        System.arraycopy(arr, 5, secondHalf, 0, 5);
+
+        Thread thread1 = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                for (int i = 0; i < firstHalf.length; i++)
+                {
+                    firstHalf[i] = (float)(firstHalf[i] * Math.sin (0.2f + i / 5) * Math.cos (0.2f + i / 5) *
+                            Math.cos (0.4f + i / 2));
+                }
+            }
+        });
+
+        Thread thread2 = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                for (int i = 0; i < secondHalf.length; i++)
+                {
+                    secondHalf[i] = (float)(secondHalf[i] * Math.sin (0.2f + i / 5) * Math.cos (0.2f + i / 5) *
+                            Math.cos (0.4f + i / 2));
+                }
+            }
+        });
+
+        System.arraycopy(firstHalf, 0, arr, 0, HALF);
+        System.arraycopy(secondHalf, 0, arr, HALF, HALF);
+
+        thread1.start();
+        thread2.start();
+        thread1.join();
+        thread2.join();
+
+        System.out.println("Время работы 2 метода - " + ((System.currentTimeMillis() - start) / 1000)
+                + " сек.");
+    }
+}
