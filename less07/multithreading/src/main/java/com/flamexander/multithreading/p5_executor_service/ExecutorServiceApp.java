@@ -23,11 +23,12 @@ public class ExecutorServiceApp {
 //        serv.shutdown();
 
         ExecutorService service = Executors.newFixedThreadPool(4);
+        System.out.println("Start task");
         Future<String> stringFuture = service.submit(new Callable<String>() {
             @Override
             public String call() throws Exception {
                 Thread.sleep(2000);
-                int x = 10 / 0;
+//                int x = 10 / 0;
                 return "Java";
             }
         });

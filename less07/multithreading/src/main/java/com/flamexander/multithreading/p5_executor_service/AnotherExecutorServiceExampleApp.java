@@ -33,21 +33,29 @@ public class AnotherExecutorServiceExampleApp {
             }
         });
 
-        service.execute(() -> System.out.println(1));
-        Thread.sleep(2000);
-        service.execute(() -> System.out.println(2));
-        Thread.sleep(2000);
-        service.execute(() -> System.out.println(3));
-        Thread.sleep(2000);
-        service.execute(() -> System.out.println(4));
-        Thread.sleep(2000);
-        service.execute(() -> System.out.println(5));
-        Thread.sleep(2000);
-        service.execute(() -> System.out.println(6));
-        Thread.sleep(2000);
-        service.shutdown();
+//        service.execute(() -> System.out.println(1));
+//        Thread.sleep(2000);
+//        service.execute(() -> System.out.println(2));
+//        Thread.sleep(2000);
+//        service.execute(() -> System.out.println(3));
+//        Thread.sleep(2000);
+//        service.execute(() -> System.out.println(4));
+//        Thread.sleep(2000);
+//        service.execute(() -> System.out.println(5));
+//        Thread.sleep(2000);
+//        service.execute(() -> System.out.println(6));
+//        Thread.sleep(2000);
+//        service.shutdown();
 
-        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        System.out.println("app started");
+
+        ScheduledExecutorService schedExecService = Executors.newSingleThreadScheduledExecutor();
+        schedExecService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("schduledES called");
+            }
+        }, 2000, 10000, TimeUnit.MILLISECONDS);
 
     }
 }

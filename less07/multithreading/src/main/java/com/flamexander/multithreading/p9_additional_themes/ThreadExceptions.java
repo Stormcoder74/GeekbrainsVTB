@@ -2,7 +2,7 @@ package com.flamexander.multithreading.p9_additional_themes;
 
 public class ThreadExceptions {
     public static void main(String[] args) {
-        Thread t = new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 int x = 10;
@@ -12,13 +12,13 @@ public class ThreadExceptions {
             }
         });
         // Thread.setDefaultUncaughtExceptionHandler(...);
-        t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+        thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 e.printStackTrace();
                 System.out.println("Catched");
             }
         });
-        t.start();
+        thread.start();
     }
 }

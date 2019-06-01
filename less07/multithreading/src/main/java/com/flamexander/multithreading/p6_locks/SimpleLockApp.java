@@ -10,8 +10,8 @@ public class SimpleLockApp {
 
         new Thread(() -> {
             System.err.println("BEFORE-LOCK-1");
-            lock.lock();
             try {
+                lock.lockInterruptibly();
                 System.err.println("GET-LOCK-1");
                 Thread.sleep(6000);
             } catch (InterruptedException e) {
