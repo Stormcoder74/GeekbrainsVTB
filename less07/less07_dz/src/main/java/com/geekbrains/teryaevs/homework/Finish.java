@@ -11,8 +11,10 @@ public class Finish {
     }
 
     public void makeFinish(Car winner){
-        finishLine.countDown();
-        this.winner = winner;
+        if (this.winner == null) {
+            finishLine.countDown();
+            this.winner = winner;
+        }
     }
 
     public Car getWinner() {

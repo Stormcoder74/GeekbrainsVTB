@@ -1,19 +1,13 @@
 package com.flamexander.multithreading.p8_wait_notify;
 
-import java.util.Arrays;
-
 public class WaitNotifyApp {
     private final Object mon = new Object();
     private volatile char currentLetter = 'A';
 
     public static void main(String[] args) {
         WaitNotifyApp waitNotifyApp = new WaitNotifyApp();
-        new Thread(() -> {
-            waitNotifyApp.printA();
-        }).start();
-        new Thread(() -> {
-            waitNotifyApp.printB();
-        }).start();
+        new Thread(() -> waitNotifyApp.printA()).start();
+        new Thread(() -> waitNotifyApp.printB()).start();
     }
 
     public void printA() {

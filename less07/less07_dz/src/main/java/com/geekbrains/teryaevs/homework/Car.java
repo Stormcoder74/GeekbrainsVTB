@@ -1,6 +1,8 @@
 package com.geekbrains.teryaevs.homework;
 
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Car implements Runnable {
     private static int CARS_COUNT;
@@ -45,8 +47,12 @@ public class Car implements Runnable {
         for (int i = 0; i < race.getStages().size(); i++) {
             Stage stage = race.getStages().get(i);
             stage.go(this);
+
+            Lock finishLock = new ReentrantLock();
+            finishLock.lock();
             if (stage.getFinish() != null)
                 stage.getFinish().makeFinish(this);
+            finishLock.unlock();
         }
     }
 }
