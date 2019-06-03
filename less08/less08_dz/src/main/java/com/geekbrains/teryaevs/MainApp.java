@@ -1,8 +1,3 @@
-================================
-Теряев Сергей ДЗ 08
-https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less08
-================================
-
 package com.geekbrains.teryaevs;
 
 import java.util.Arrays;
