@@ -3,3 +3,32 @@
 
 2. Integer immutable?
 3. 0:50 Exception в потоке?
+
+package com.flamexander.multithreading.p1_thread_creation_and_base;
+
+public class TempApp {
+    private static Integer mon = 0;
+
+    public static void main(String[] args) {
+        for(int i = 0; i < 3; i++){
+            new Thread(() -> {
+                System.out.println("Thread " + Thread.currentThread().getName() + " start");
+                mon++;
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Thread " + Thread.currentThread().getName() + " finish");
+            }).start();
+        }
+    }
+}
+
+Александр, на 7 уроке вы показывали пример про иммутабельный Integer как монитор синхронизации. Пробовал повторить и обнаружил следующую разницу. Если расположить код так же как на занятии
+
+то он действительно ведет себя неожиданно, как и было продемонстрировано
+
+Но если его поместить в цикл
+
+то он перестает капризничать и работает как и ожидается
