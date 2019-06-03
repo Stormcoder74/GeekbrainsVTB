@@ -1,0 +1,8 @@
+try {
+	System.out.println(Cat.class.getConstructor(new Class[] {String.class, int.class}));
+} catch (NoSuchMethodException e) {
+	e.printStackTrace();
+}
+
+"Считаем что в проекте не связанных между собой сущностей, ..." после слова "проекте" видимо слово "нет"?
+
