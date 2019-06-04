@@ -17,45 +17,9 @@ public class Course {
     @Column
     private int hours;
 
-    public Course() {
-    }
-
     public Course(long id, String title, int hours) {
         this.id = id;
         this.title = title;
         this.hours = hours;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getHours() {
-        return hours;
-    }
-
-    public void setHours(int hours) {
-        this.hours = hours;
-    }
-
-    @Override
-    public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", hours=" + hours +
-                '}';
     }
 }

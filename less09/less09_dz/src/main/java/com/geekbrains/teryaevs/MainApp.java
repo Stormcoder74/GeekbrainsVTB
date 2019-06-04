@@ -2,6 +2,7 @@ package com.geekbrains.teryaevs;
 
 import com.geekbrains.teryaevs.handlers.Repository;
 import com.geekbrains.teryaevs.handlers.TableMaker;
+import com.geekbrains.teryaevs.tables.Course;
 import com.geekbrains.teryaevs.tables.Student;
 
 import java.sql.Connection;
@@ -29,8 +30,12 @@ public class MainApp {
         }
 
         Repository repository = new Repository();
+
         Student student = new Student(10105, "Иванов", 19);
         repository.save(connection, student);
+
+        Course course = new Course(234, "Java", 40);
+        repository.save(connection, course);
 
         disconnect();
     }
