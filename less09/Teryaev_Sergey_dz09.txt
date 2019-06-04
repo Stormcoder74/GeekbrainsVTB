@@ -1,4 +1,346 @@
 ================================
-Теряев Сергей ДЗ 07
-https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less07
+Теряев Сергей ДЗ 09
+https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less09
 ================================
+
+package com.geekbrains.teryaevs.annotations;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Table {
+    String name() default "";
+}
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Column {
+    String name() default "";
+}
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Id {
+}
+
+package com.geekbrains.teryaevs.tables;
+
+import com.geekbrains.teryaevs.annotations.Column;
+import com.geekbrains.teryaevs.annotations.Id;
+import com.geekbrains.teryaevs.annotations.Table;
+
+@Table(name = "students")
+public class Student {
+
+    @Id
+    @Column(name = "students_id")
+    private long id;
+
+    @Column
+    private String name;
+
+    @Column
+    private int age;
+
+    public Student(long id, String name, int age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+}
+
+@Table
+public class Course {
+
+    @Id
+    @Column(name = "course_id")
+    private long id;
+
+    @Column
+    private String title;
+
+    @Column
+    private int hours;
+
+    public Course(long id, String title, int hours) {
+        this.id = id;
+        this.title = title;
+        this.hours = hours;
+    }
+}
+
+package com.geekbrains.teryaevs.handlers;
+
+import com.geekbrains.teryaevs.annotations.Column;
+import com.geekbrains.teryaevs.annotations.Id;
+import com.geekbrains.teryaevs.annotations.Table;
+
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
+
+public class TableMaker {
+    static public void makeTables(Connection connection, List<String> classList) {
+        for (String clazz : classList) {
+            try {
+                Class tableClass = Class.forName(clazz);
+                makeTable(connection, tableClass);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void makeTable(Connection connection, Class tableClass) {
+        Table tableAnnotation = (Table) tableClass.getAnnotation(Table.class);
+        if (tableAnnotation != null) {
+            String tableName = tableAnnotation.name();
+            if (tableName.equals("")) {
+                tableName = tableClass.getSimpleName().toLowerCase();
+            }
+
+            Field[] fields = tableClass.getDeclaredFields();
+            Map<String, String> columns = new LinkedHashMap<>();
+
+            String primaryKey = null;
+
+            for (Field field : fields) {
+                Column columnAnnotation = field.getAnnotation(Column.class);
+                String columnName;
+                if (columnAnnotation != null) {
+                    columnName = columnAnnotation.name();
+                    if (columnName.equals("")) {
+                        columnName = field.getName().toLowerCase();
+                    }
+
+                    Class type = field.getType();
+                    String columnType;
+                    switch (type.getSimpleName()) {
+                        case "long":
+                            columnType = "int8";
+                            break;
+                        case "int":
+                            columnType = "int4";
+                            break;
+                        case "String":
+                            columnType = "text";
+                            break;
+                        default:
+                            throw new RuntimeException("Unknown field type");
+                    }
+                    columns.put(columnName, columnType);
+
+                    Id prKeyAnnotation = field.getAnnotation(Id.class);
+                    if (prKeyAnnotation != null) {
+                        if (primaryKey == null) {
+                            primaryKey = columnName;
+                        } else {
+                            throw new RuntimeException("More than one primary key");
+                            // условно допустим, что PK может быть только один
+                        }
+                    }
+                }
+            }
+            createTable(connection, tableName, columns, primaryKey);
+        }
+    }
+
+    private static void createTable(
+            Connection connection,
+            String tableName,
+            Map<String, String> columns,
+            String primaryKey) {
+
+        StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableName + " (");
+        Iterator<Map.Entry<String, String>> columnIterator = columns.entrySet().iterator();
+
+        while (columnIterator.hasNext()) {
+            Map.Entry<String, String> column = columnIterator.next();
+            query.append(column.getKey()).append(" ").append(column.getValue());
+
+            if (column.getKey().equals(primaryKey))
+                query.append(" PRIMARY KEY");
+
+            if (columnIterator.hasNext())
+                query.append(", ");
+        }
+        query.append(");");
+
+        System.out.println(query);
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(query.toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+package com.geekbrains.teryaevs.handlers;
+
+import com.geekbrains.teryaevs.annotations.Column;
+import com.geekbrains.teryaevs.annotations.Table;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
+
+public class Repository {
+    public void save(Connection connection, Object object) {
+        Class objectClass = object.getClass();
+        Table tableAnnotation = (Table) objectClass.getAnnotation(Table.class);
+        if (tableAnnotation != null) {
+            String tableName = tableAnnotation.name();
+            if (tableName.equals("")) {
+                tableName = objectClass.getSimpleName().toLowerCase();
+            }
+
+            Field[] fields = objectClass.getDeclaredFields();
+            Map<String, Object> columns = new LinkedHashMap<>();
+
+            for (Field field : fields) {
+                Column columnAnnotation = field.getAnnotation(Column.class);
+                if (columnAnnotation != null) {
+                    String columnName = columnAnnotation.name();
+                    if (columnName.equals("")) {
+                        columnName = field.getName().toLowerCase();
+                    }
+
+                    if (Modifier.isPrivate(field.getModifiers())) {
+                        field.setAccessible(true);
+                    }
+                    Object value = null;
+                    try {
+                        value = field.get(object);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    columns.put(columnName, value);
+                }
+            }
+            insert(connection, tableName, columns);
+        }
+    }
+
+    private void insert(
+            Connection connection,
+            String tableName,
+            Map<String, Object> columns
+    ) {
+        Iterator<Map.Entry<String, Object>> columnIterator = columns.entrySet().iterator();
+
+        StringBuilder query = new StringBuilder("INSERT INTO " + tableName + " (");
+        StringBuilder values = new StringBuilder("VALUES (");
+
+        while (columnIterator.hasNext()) {
+            Map.Entry<String, Object> column = columnIterator.next();
+            query.append(column.getKey());
+
+            if (column.getValue() instanceof String)
+                values.append("'").append(column.getValue()).append("'");
+            else
+                values.append(column.getValue());
+
+            if (columnIterator.hasNext()) {
+                query.append(", ");
+                values.append(", ");
+            }
+        }
+        query.append(") ");
+        values.append(");");
+        query.append(values);
+
+        System.out.println(query);
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(query.toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+package com.geekbrains.teryaevs;
+
+import com.geekbrains.teryaevs.handlers.Repository;
+import com.geekbrains.teryaevs.handlers.TableMaker;
+import com.geekbrains.teryaevs.tables.Course;
+import com.geekbrains.teryaevs.tables.Student;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class MainApp {
+    private static final boolean AUTO_MAKE_TABLES = true;
+    private static final String PAKKAGE
+            = "com.geekbrains.teryaevs.tables.";
+
+    private static Connection connection;
+
+    public static void main(String[] args) {
+        connect();
+
+        if (AUTO_MAKE_TABLES) {
+            List<String> classList = new ArrayList<>(Arrays.asList(
+                    PAKKAGE + "Student",
+                    PAKKAGE + "Course"));
+            TableMaker.makeTables(connection, classList);
+        }
+
+        Repository repository = new Repository();
+
+        Student student = new Student(10105, "Иванов", 19);
+        repository.save(connection, student);
+
+        Course course = new Course(234, "Java", 40);
+        repository.save(connection, course);
+
+        disconnect();
+    }
+
+    private static void connect() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            String url = "jdbc:postgresql://localhost:5432/geek_test";
+            String username = "geek";
+            String pass = "geek";
+
+            connection = DriverManager.getConnection(url, username, pass);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void disconnect(){
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+
+
+
+
+
