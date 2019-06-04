@@ -20,8 +20,6 @@ public class TableMaker {
                 e.printStackTrace();
             }
         }
-
-
     }
 
     private static void makeTable(Connection connection, Class tableClass) {
@@ -69,6 +67,7 @@ public class TableMaker {
                             primaryKey = columnName;
                         } else {
                             throw new RuntimeException("More than one primary key");
+                            // условно допустим, что PK может быть только один
                         }
                     }
                 }

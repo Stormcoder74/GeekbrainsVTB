@@ -70,7 +70,6 @@ public class Repository {
                 query.append(", ");
                 values.append(", ");
             }
-
         }
         query.append(") ");
         values.append(");");
@@ -83,6 +82,5 @@ public class Repository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 }
