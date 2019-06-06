@@ -1,8 +1,3 @@
-================================
-Теряев Сергей ДЗ 10
-https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less10
-================================
-
 CREATE TABLE students (
 id serial PRIMARY KEY,
 name varchar(50),
