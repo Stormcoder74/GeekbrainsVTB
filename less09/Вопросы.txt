@@ -6,3 +6,4 @@ try {
 
 "Считаем что в проекте не связанных между собой сущностей, ..." после слова "проекте" видимо слово "нет"?
 
+CREATE TABLE courses(c_no text PRIMARY KEY, title text, hours integer);
