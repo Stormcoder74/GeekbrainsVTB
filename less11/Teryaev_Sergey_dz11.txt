@@ -2,3 +2,375 @@
 Теряев Сергей ДЗ 11
 https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less11
 ================================
+package com.geekbrains.teryaevs.entities;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "consumers")
+public class Consumer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private String name;
+
+    @OneToMany(mappedBy = "consumer",
+            fetch = FetchType.EAGER)
+    private List<Purchase> purchases;
+
+    public Consumer() {
+        this.purchases = new ArrayList<>();
+    }
+
+    public Consumer(String name) {
+        this();
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+}
+
+@Entity
+@Table(name = "products")
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(name = "product_name")
+    private String name;
+
+    private int price;
+
+    @OneToMany(mappedBy = "product",
+            fetch = FetchType.EAGER)
+    private List<Purchase> purchases;
+
+    public Product() {
+        this.purchases = new ArrayList<>();
+    }
+
+    public Product(String name, int price) {
+        this();
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+}
+
+@Entity
+@Table(name = "purchases")
+public class Purchase {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "consumers_id")
+    private Consumer consumer;
+
+    @ManyToOne
+    @JoinColumn(name = "products_id")
+    private Product product;
+
+    @Column(name = "price_of_purchase")
+    private int price;
+
+    public Purchase() {
+    }
+
+    public Purchase(Consumer consumer, Product product, int price) {
+        this.consumer = consumer;
+        this.product = product;
+        this.price = price;
+    }
+
+    public Consumer getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(Consumer consumer) {
+        this.consumer = consumer;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+}
+
+package com.geekbrains.teryaevs.dao;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+class HibernateUtil {
+    private static SessionFactory factory;
+
+    static SessionFactory getSessionFactory() {
+        if (factory == null) {
+            factory = new Configuration()
+                    .configure("hibernate.cfg.xml")
+                    .buildSessionFactory();
+        }
+        return factory;
+    }
+
+    static void close() {
+        if (factory != null)
+            factory.close();
+    }
+}
+
+import com.geekbrains.teryaevs.entities.Consumer;
+import com.geekbrains.teryaevs.entities.Product;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
+
+public class DAO {
+    private SessionFactory factory;
+
+    public DAO() {
+        factory = HibernateUtil.getSessionFactory();
+    }
+
+    public void close() {
+        HibernateUtil.close();
+    }
+
+    public boolean insert(Object object) {
+        try {
+            Session session = factory.getCurrentSession();
+            session.beginTransaction();
+            session.save(object);
+            session.getTransaction().commit();
+            return true;
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean remove(Object object) {
+        try {
+            Session session = factory.getCurrentSession();
+            session.beginTransaction();
+            session.remove(object);
+            session.getTransaction().commit();
+            return true;
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Consumer getConsumerByName(String name) {
+        try (Session session = factory.getCurrentSession()) {
+            session.beginTransaction();
+
+            Consumer consumer = (Consumer) session.createQuery(
+                    "FROM Consumer WHERE name = '" + name + "'").getSingleResult();
+
+            session.getTransaction().commit();
+            return consumer;
+        } catch (HibernateException | NoResultException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Product getProductByName(String name) {
+        try (Session session = factory.getCurrentSession()) {
+            session.beginTransaction();
+
+            Product product = (Product) session.createQuery(
+                    "FROM Product WHERE name = '" + name + "'").getSingleResult();
+
+            session.getTransaction().commit();
+            return product;
+        } catch (HibernateException | NoResultException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+
+package com.geekbrains.teryaevs.controllers;
+
+import com.geekbrains.teryaevs.dao.DAO;
+import com.geekbrains.teryaevs.entities.Consumer;
+import com.geekbrains.teryaevs.entities.Product;
+import com.geekbrains.teryaevs.entities.Purchase;
+
+import java.util.Scanner;
+
+public class Controller {
+    private DAO dbService;
+
+    public Controller() {
+        dbService = new DAO();
+    }
+
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        boolean exit = false;
+
+        System.out.println("Введите команду");
+        do {
+            System.out.print(">");
+            input = scanner.nextLine();
+            String[] commands = input.split(" ");
+            if (!commands[0].isEmpty())
+                switch (commands[0]) {
+                    case "/exit":
+                        dbService.close();
+                        exit = true;
+                        break;
+                    case "/showProductsByPerson":
+                        showProductsByPerson(commands);
+                        break;
+                    case "/findPersonsByProduct":
+                        findPersonsByProduct(commands);
+                        break;
+                    case "/removePerson":
+                        removePerson(commands);
+                        break;
+                    case "/removeProduct":
+                        removeProduct(commands);
+                        break;
+                    case "/buy":
+                        buy(commands);
+                        break;
+                    default:
+                        System.out.println("неизвестная команда");
+                }
+        } while (!exit);
+    }
+
+    private void showProductsByPerson(String[] commands) {
+        if (commands.length > 1) {
+            Consumer consumer = dbService.getConsumerByName(commands[1]);
+            if (consumer != null)
+                for (Purchase p : consumer.getPurchases())
+                    System.out.println(p.getProduct().getName() + " " + p.getPrice());
+            else
+                System.out.println("Нет такого покупателя!");
+        }else
+            System.out.println("неверное число параметров");
+    }
+
+    private void findPersonsByProduct(String[] commands) {
+        if (commands.length > 1) {
+            Product product = dbService.getProductByName(commands[1]);
+            if (product != null)
+                for (Purchase p : product.getPurchases())
+                    System.out.println(p.getConsumer().getName() + " " + p.getPrice());
+            else
+                System.out.println("Нет такого товара!");
+        }else
+            System.out.println("неверное число параметров");
+    }
+
+    private void removePerson(String[] commands) {
+        if (commands.length > 1) {
+            Consumer consumer = dbService.getConsumerByName(commands[1]);
+            if (consumer != null) {
+                if (dbService.remove(consumer))
+                    System.out.println("покупатель " + consumer.getName() + " успешно удален");
+            } else
+                System.out.println("Нет такого покупателя!");
+        }else
+            System.out.println("неверное число параметров");
+    }
+
+    private void removeProduct(String[] commands) {
+        if (commands.length > 1) {
+            Product product = dbService.getProductByName(commands[1]);
+            if (product != null) {
+                if (dbService.remove(product))
+                    System.out.println("товар " + product.getName() + " успешно удален");
+            } else
+                System.out.println("Нет такого товара!");
+        }else
+            System.out.println("неверное число параметров");
+    }
+
+    private void buy(String[] commands) {
+        if (commands.length > 2) {
+            Consumer consumer = dbService.getConsumerByName(commands[1]);
+            if (consumer == null) {
+                System.out.println("такого покупателя не существует");
+                return;
+            }
+            Product product = dbService.getProductByName(commands[2]);
+            if (product == null) {
+                System.out.println("такого товара не существует");
+                return;
+            }
+
+            if (dbService.insert(new Purchase(consumer, product, product.getPrice())))
+                System.out.println("" + consumer.getName() + " успешно приобрел " + product.getName());
+            else
+                System.out.println("ошибка при покупке");
+        } else 
+            System.out.println("неверное число параметров");
+    }
+}
+
+package com.geekbrains.teryaevs;
+
+import com.geekbrains.teryaevs.controllers.Controller;
+
+public class MainApp {
+    public static void main(String[] args) {
+        new Controller().run();
+    }
+}
