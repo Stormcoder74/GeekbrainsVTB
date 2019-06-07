@@ -37,12 +37,4 @@ public class Consumer {
     public List<Purchase> getPurchases() {
         return purchases;
     }
-
-    @Override
-    public String toString() {
-        return "Consumer{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

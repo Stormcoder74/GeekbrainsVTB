@@ -55,44 +55,48 @@ public class Controller {
         if (commands.length > 1) {
             Consumer consumer = dbService.getConsumerByName(commands[1]);
             if (consumer != null)
-                for (Purchase p : consumer.getPurchases()) {
+                for (Purchase p : consumer.getPurchases())
                     System.out.println(p.getProduct().getName() + " " + p.getPrice());
-                }
             else
                 System.out.println("Нет такого покупателя!");
-        }
+        }else
+            System.out.println("неверное число параметров");
     }
 
     private void findPersonsByProduct(String[] commands) {
         if (commands.length > 1) {
             Product product = dbService.getProductByName(commands[1]);
             if (product != null)
-                for (Purchase p : product.getPurchases()) {
+                for (Purchase p : product.getPurchases())
                     System.out.println(p.getConsumer().getName() + " " + p.getPrice());
-                }
             else
                 System.out.println("Нет такого товара!");
-        }
+        }else
+            System.out.println("неверное число параметров");
     }
 
     private void removePerson(String[] commands) {
-        Consumer consumer = dbService.getConsumerByName(commands[1]);
-        if (consumer != null) {
-            if (dbService.remove(consumer)) {
-                System.out.println("покупатель " + consumer.getName() + " успешно удален");
-            }
-        } else
-            System.out.println("Нет такого покупателя!");
+        if (commands.length > 1) {
+            Consumer consumer = dbService.getConsumerByName(commands[1]);
+            if (consumer != null) {
+                if (dbService.remove(consumer))
+                    System.out.println("покупатель " + consumer.getName() + " успешно удален");
+            } else
+                System.out.println("Нет такого покупателя!");
+        }else
+            System.out.println("неверное число параметров");
     }
 
     private void removeProduct(String[] commands) {
-        Product product = dbService.getProductByName(commands[1]);
-        if (product != null) {
-            if (dbService.remove(product)) {
-                System.out.println("товар " + product.getName() + " успешно удален");
-            }
-        } else
-            System.out.println("Нет такого товара!");
+        if (commands.length > 1) {
+            Product product = dbService.getProductByName(commands[1]);
+            if (product != null) {
+                if (dbService.remove(product))
+                    System.out.println("товар " + product.getName() + " успешно удален");
+            } else
+                System.out.println("Нет такого товара!");
+        }else
+            System.out.println("неверное число параметров");
     }
 
     private void buy(String[] commands) {
@@ -108,13 +112,11 @@ public class Controller {
                 return;
             }
 
-            if (dbService.insert(new Purchase(consumer, product, product.getPrice()))) {
+            if (dbService.insert(new Purchase(consumer, product, product.getPrice())))
                 System.out.println("" + consumer.getName() + " успешно приобрел " + product.getName());
-            } else {
+            else
                 System.out.println("ошибка при покупке");
-            }
-        } else {
+        } else
             System.out.println("неверное число параметров");
-        }
     }
 }

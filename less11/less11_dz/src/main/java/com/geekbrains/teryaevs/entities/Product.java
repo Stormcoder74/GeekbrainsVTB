@@ -49,13 +49,4 @@ public class Product {
     public List<Purchase> getPurchases() {
         return purchases;
     }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
-    }
 }

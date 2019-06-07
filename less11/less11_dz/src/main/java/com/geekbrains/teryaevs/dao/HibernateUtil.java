@@ -3,11 +3,11 @@ package com.geekbrains.teryaevs.dao;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class HibernateUtil {
+class HibernateUtil {
     private static SessionFactory factory;
 
-    static SessionFactory getSessionFactory(){
-        if(factory == null){
+    static SessionFactory getSessionFactory() {
+        if (factory == null) {
             factory = new Configuration()
                     .configure("hibernate.cfg.xml")
                     .buildSessionFactory();
@@ -15,7 +15,8 @@ public class HibernateUtil {
         return factory;
     }
 
-    public static void close(){
-        factory.close();
+    static void close() {
+        if (factory != null)
+            factory.close();
     }
 }

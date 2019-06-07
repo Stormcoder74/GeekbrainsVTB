@@ -17,7 +17,7 @@ public class DAO {
     }
 
     public void close() {
-        if (factory != null) factory.close();
+        HibernateUtil.close();
     }
 
     public boolean insert(Object object) {
