@@ -113,7 +113,7 @@ public class Controller {
             }
 
             if (dbService.insert(new Purchase(consumer, product, product.getPrice())))
-                System.out.println("" + consumer.getName() + " успешно приобрел " + product.getName());
+                System.out.println("покупатель " + consumer.getName() + " успешно приобрел " + product.getName());
             else
                 System.out.println("ошибка при покупке");
         } else

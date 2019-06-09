@@ -14,7 +14,7 @@ public class Product {
     @Column(name = "product_name")
     private String name;
 
-    private int price;
+    private double price;
 
     @OneToMany(mappedBy = "product",
             fetch = FetchType.EAGER)
@@ -24,7 +24,7 @@ public class Product {
         this.purchases = new ArrayList<>();
     }
 
-    public Product(String name, int price) {
+    public Product(String name, double price) {
         this();
         this.name = name;
         this.price = price;
@@ -38,11 +38,11 @@ public class Product {
         this.name = name;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

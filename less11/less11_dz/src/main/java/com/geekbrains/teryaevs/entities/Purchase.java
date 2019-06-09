@@ -18,12 +18,12 @@ public class Purchase {
     private Product product;
 
     @Column(name = "price_of_purchase")
-    private int price;
+    private double price;
 
     public Purchase() {
     }
 
-    public Purchase(Consumer consumer, Product product, int price) {
+    public Purchase(Consumer consumer, Product product, double price) {
         this.consumer = consumer;
         this.product = product;
         this.price = price;
@@ -45,11 +45,11 @@ public class Purchase {
         this.product = product;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 }

@@ -6,7 +6,7 @@ name varchar(50)
 CREATE TABLE products (
 id serial PRIMARY KEY,
 product_name varchar(50) UNIQUE,
-price integer check (price >= 0)
+price numeric check (price >= 0)
 );
 
 CREATE TABLE purchases (
@@ -15,7 +15,7 @@ consumers_id integer
 CONSTRAINT fk_consumers REFERENCES consumers(id) ON DELETE CASCADE,
 products_id integer
 CONSTRAINT fk_products REFERENCES products(id) ON DELETE CASCADE,
-price_of_purchase integer CHECK (price_of_purchase >= 0)
+price_of_purchase numeric CHECK (price_of_purchase >= 0)
 );
 
 INSERT INTO consumers (name)
