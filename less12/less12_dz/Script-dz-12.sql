@@ -1,11 +1,11 @@
-create table items (
-id serial primary key,
+DROP TABLE IF EXISTS items;
+
+CREATE TABLE items (
+id serial PRIMARY KEY,
 value integer);
 
-truncate items restart identity;
-
-insert into items (value)
-values (0), (0), (0), (0), (0),
+INSERT INTO items (value)
+VALUES (0), (0), (0), (0), (0),
 (0), (0), (0), (0), (0),
 (0), (0), (0), (0), (0),
 (0), (0), (0), (0), (0),
