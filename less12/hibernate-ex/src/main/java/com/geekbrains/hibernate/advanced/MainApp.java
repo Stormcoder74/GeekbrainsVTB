@@ -25,8 +25,8 @@ public class MainApp {
 
     public static void main(String[] args) throws IOException {
         prepareData();
-//        work();
-        optimisticVersioningThreadingTest();
+        work();
+//        optimisticVersioningThreadingTest();
 //        optimisticVersioningThreadingTest();
     }
 
@@ -39,17 +39,19 @@ public class MainApp {
             session = factory.getCurrentSession();
             session.beginTransaction();
             Product product = session.get(Product.class, 1L);
-            Product product2 = session.get(Product.class, 1L);
+            Product product2 = session.load(Product.class, 1L);
             Product product3 = session.find(Product.class, 1L);
             System.out.println(product);
             Customer customer = session.get(Customer.class, 1L);
             System.out.println(customer);
-            Manufacturer manufacturer = session.get(Manufacturer.class, 1L);
+            Manufacturer manufacturer = session.load(Manufacturer.class, 1L);
             System.out.println(manufacturer);
             // System.out.println(manufacturer.getProducts());
             System.out.println("PRICE: " + manufacturer.avgProductsPrice);
+            manufacturer.getProducts().size();
+
             session.getTransaction().commit();
-//            System.out.println(manufacturer.getProducts());
+            System.out.println(manufacturer.getProducts());
         } finally {
             factory.close();
             if (session != null) {

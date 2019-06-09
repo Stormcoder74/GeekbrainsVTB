@@ -17,7 +17,7 @@ public class Manufacturer {
     @Column(name = "title")
     String title;
 
-    @OneToMany(mappedBy = "manufacturer")
+    @OneToMany(mappedBy = "manufacturer", fetch = FetchType.LAZY)
     List<Product> products;
 
     @Formula("(SELECT avg(p.price) FROM products p WHERE p.manufacturer_id = id)")
