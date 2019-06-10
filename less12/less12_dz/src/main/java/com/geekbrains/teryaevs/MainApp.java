@@ -20,6 +20,17 @@ public class MainApp {
     private static final int ROWS = 10;
     private static final int THREADS = 3;
 
+    private static void prepareData(SessionFactory factory) throws IOException {
+        try (Session session = factory.getCurrentSession()) {
+            String sql = Files
+                    .lines(Paths.get("Script-dz-12.sql"))
+                    .collect(Collectors.joining(" "));
+            session.beginTransaction();
+            session.createNativeQuery(sql).executeUpdate();
+            session.getTransaction().commit();
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
@@ -67,17 +78,6 @@ public class MainApp {
             System.out.println("Check sum is: " + checkSum);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-    }
-
-    private static void prepareData(SessionFactory factory) throws IOException {
-        try (Session session = factory.getCurrentSession()) {
-            String sql = Files
-                    .lines(Paths.get("Script-dz-12.sql"))
-                    .collect(Collectors.joining(" "));
-            session.beginTransaction();
-            session.createNativeQuery(sql).executeUpdate();
-            session.getTransaction().commit();
         }
     }
 }
