@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Table(name = "big_items")
 public class BigItem {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     Long id;
 
@@ -36,6 +36,6 @@ public class BigItem {
 
     @Override
     public String toString() {
-        return String.format("BigItem [ id = %d, val = %d, version = %d ]", id, val, version);
+        return String.format("BigItem [id = %d, val = %d, version = %d]", id, val, version);
     }
 }

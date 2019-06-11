@@ -26,8 +26,8 @@ public class MainApp {
     public static void main(String[] args) throws IOException {
         prepareData();
 //        work();
+//        optimisticVersioningTest();
         optimisticVersioningThreadingTest();
-//        optimisticVersioningThreadingTest();
     }
 
     public static void work() {
@@ -62,30 +62,30 @@ public class MainApp {
         SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
                 .buildSessionFactory();
-        Session session = null;
-        try {
-            session = factory.getCurrentSession();
-            session.beginTransaction();
-            BigItem bigItem = new BigItem(20);
-            session.save(bigItem);
-            System.out.println(bigItem);
-            bigItem.setVal(25);
-            System.out.println(bigItem);
-            session.save(bigItem);
-            System.out.println(bigItem);
-            session.getTransaction().commit();
-
-            session = factory.getCurrentSession();
-            session.beginTransaction();
-            bigItem = session.get(BigItem.class, 1L);
-            System.out.println(bigItem);
-            session.getTransaction().commit();
-        } finally {
-            factory.close();
-            if (session != null) {
-                session.close();
-            }
-        }
+//        Session session = null;
+//        try {
+//            session = factory.getCurrentSession();
+//            session.beginTransaction();
+//            BigItem bigItem = new BigItem(20);
+//            session.save(bigItem);
+//            System.out.println(bigItem);
+//            bigItem.setVal(25);
+//            System.out.println(bigItem);
+//            session.save(bigItem);
+//            System.out.println(bigItem);
+//            session.getTransaction().commit();
+//
+//            session = factory.getCurrentSession();
+//            session.beginTransaction();
+//            bigItem = session.get(BigItem.class, 1L);
+//            System.out.println(bigItem);
+//            session.getTransaction().commit();
+//        } finally {
+//            factory.close();
+//            if (session != null) {
+//                session.close();
+//            }
+//        }
     }
 
     public static void optimisticVersioningThreadingTest() {
@@ -98,10 +98,12 @@ public class MainApp {
                 System.out.println("Thread #1 started");
                 Session session = factory.getCurrentSession();
                 session.beginTransaction();
+
                 BigItem bigItem = session.get(BigItem.class, 1L);
                 bigItem.setVal(100);
                 uncheckableSleep(1000);
                 session.save(bigItem);
+
                 session.getTransaction().commit();
                 System.out.println("Thread #1 committed");
                 if (session != null) {
@@ -114,11 +116,13 @@ public class MainApp {
                 System.out.println("Thread #2 started");
                 Session session = factory.getCurrentSession();
                 session.beginTransaction();
+
                 BigItem bigItem = session.get(BigItem.class, 1L);
                 bigItem.setVal(200);
                 uncheckableSleep(3000);
                 try {
                     session.save(bigItem);
+
                     session.getTransaction().commit();
                     System.out.println("Thread #2 committed");
                 } catch (OptimisticLockException e) {
@@ -203,7 +207,8 @@ public class MainApp {
             // System.out.println(manufacturer.getProducts());
         } catch (Exception e) {
             try {
-                if (session.getTransaction().getStatus() == TransactionStatus.ACTIVE || session.getTransaction().getStatus() == TransactionStatus.MARKED_ROLLBACK) {
+                if (    session.getTransaction().getStatus() == TransactionStatus.ACTIVE ||
+                        session.getTransaction().getStatus() == TransactionStatus.MARKED_ROLLBACK) {
                     session.getTransaction().rollback();
                 }
             } catch (Exception rollbackException) {
