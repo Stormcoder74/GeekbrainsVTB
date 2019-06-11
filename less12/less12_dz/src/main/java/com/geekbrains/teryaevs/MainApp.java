@@ -100,6 +100,7 @@ public class MainApp {
             e.printStackTrace();
         }
         System.out.println(System.currentTimeMillis() - time);
+        factory.close();
     }
 }
 

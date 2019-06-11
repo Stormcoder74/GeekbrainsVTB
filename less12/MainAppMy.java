@@ -54,9 +54,10 @@ public class MainAppMy {
     }
 
     public static void optimisticVersioningTest(SessionFactory factory) {
-        try (Session session = factory.getCurrentSession()) {
+        Session session = null;
+        try {
+            session = factory.getCurrentSession();
             session.beginTransaction();
-
             BigItem bigItem = new BigItem(20);
             session.save(bigItem);
             System.out.println(bigItem);
@@ -64,15 +65,18 @@ public class MainAppMy {
             System.out.println(bigItem);
             session.save(bigItem);
             System.out.println(bigItem);
-
             session.getTransaction().commit();
 
+            session = factory.getCurrentSession();
             session.beginTransaction();
-
             bigItem = session.get(BigItem.class, 1L);
             System.out.println(bigItem);
-
             session.getTransaction().commit();
+        } finally {
+            factory.close();
+            if (session != null) {
+                session.close();
+            }
         }
     }
 

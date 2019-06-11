@@ -1,6 +1,5 @@
 package com.geekbrains.teryaevs.entities;
 
-
 import javax.persistence.*;
 
 @Entity
