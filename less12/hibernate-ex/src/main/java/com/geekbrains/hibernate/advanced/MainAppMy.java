@@ -18,54 +18,45 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
-public class MainApp {
+public class MainAppMy {
     // Повторяющиеся покупки в 4 *
     // hibernate.hbm2ddl.auto none
     // get - caching?
 
     public static void main(String[] args) throws IOException {
-        prepareData();
-//        work();
-        optimisticVersioningThreadingTest();
-//        optimisticVersioningThreadingTest();
-    }
-
-    public static void work() {
         SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
                 .buildSessionFactory();
-        Session session = null;
-        try {
-            session = factory.getCurrentSession();
+        prepareData(factory);
+//        work(factory);
+        optimisticVersioningTest(factory);
+//        optimisticVersioningThreadingTest(factory);
+    }
+
+    public static void work(SessionFactory factory) {
+        try (Session session = factory.getCurrentSession()) {
             session.beginTransaction();
             Product product = session.get(Product.class, 1L);
-            Product product2 = session.get(Product.class, 1L);
+            Product product2 = session.load(Product.class, 1L);
             Product product3 = session.find(Product.class, 1L);
             System.out.println(product);
             Customer customer = session.get(Customer.class, 1L);
             System.out.println(customer);
-            Manufacturer manufacturer = session.get(Manufacturer.class, 1L);
+            Manufacturer manufacturer = session.load(Manufacturer.class, 1L);
             System.out.println(manufacturer);
             // System.out.println(manufacturer.getProducts());
             System.out.println("PRICE: " + manufacturer.avgProductsPrice);
+            manufacturer.getProducts().size();
+
             session.getTransaction().commit();
-//            System.out.println(manufacturer.getProducts());
-        } finally {
-            factory.close();
-            if (session != null) {
-                session.close();
-            }
+            System.out.println(manufacturer.getProducts());
         }
     }
 
-    public static void optimisticVersioningTest() {
-        SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
-        Session session = null;
-        try {
-            session = factory.getCurrentSession();
+    public static void optimisticVersioningTest(SessionFactory factory) {
+        try (Session session = factory.getCurrentSession()) {
             session.beginTransaction();
+
             BigItem bigItem = new BigItem(20);
             session.save(bigItem);
             System.out.println(bigItem);
@@ -73,35 +64,30 @@ public class MainApp {
             System.out.println(bigItem);
             session.save(bigItem);
             System.out.println(bigItem);
+
             session.getTransaction().commit();
 
-            session = factory.getCurrentSession();
             session.beginTransaction();
+
             bigItem = session.get(BigItem.class, 1L);
             System.out.println(bigItem);
+
             session.getTransaction().commit();
-        } finally {
-            factory.close();
-            if (session != null) {
-                session.close();
-            }
         }
     }
 
-    public static void optimisticVersioningThreadingTest() {
+    public static void optimisticVersioningThreadingTest(SessionFactory factory) {
         CountDownLatch countDownLatch = new CountDownLatch(2);
-        SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
-        try {
+        try (Session session = factory.getCurrentSession()) {
             new Thread(() -> {
                 System.out.println("Thread #1 started");
-                Session session = factory.getCurrentSession();
                 session.beginTransaction();
+
                 BigItem bigItem = session.get(BigItem.class, 1L);
                 bigItem.setVal(100);
                 uncheckableSleep(1000);
                 session.save(bigItem);
+
                 session.getTransaction().commit();
                 System.out.println("Thread #1 committed");
                 if (session != null) {
@@ -112,13 +98,14 @@ public class MainApp {
 
             new Thread(() -> {
                 System.out.println("Thread #2 started");
-                Session session = factory.getCurrentSession();
                 session.beginTransaction();
+
                 BigItem bigItem = session.get(BigItem.class, 1L);
                 bigItem.setVal(200);
                 uncheckableSleep(3000);
                 try {
                     session.save(bigItem);
+
                     session.getTransaction().commit();
                     System.out.println("Thread #2 committed");
                 } catch (OptimisticLockException e) {
@@ -137,43 +124,26 @@ public class MainApp {
                 e.printStackTrace();
             }
             System.out.println("END");
-        } finally {
-            factory.close();
         }
     }
 
-    public static void queryOptimisticLockHandle() {
-        SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
-        Session session = null;
-        try {
-            session = factory.getCurrentSession();
+    public static void queryOptimisticLockHandle(SessionFactory factory) {
+        try (Session session = factory.getCurrentSession()) {
             session.beginTransaction();
-            List<Product> products = session.createQuery("SELECT p FROM Product p WHERE p.title = :title;", Product.class)
+            List<Product> products = session.createQuery("SELECT p FROM Product p WHERE p.title = :title", Product.class)
                     .setLockMode(LockModeType.OPTIMISTIC)
                     .setParameter("title", "Sprite")
                     .getResultList();
 
             session.getTransaction().commit();
-        } finally {
-            factory.close();
-            if (session != null) {
-                session.close();
-            }
         }
     }
 
-    public static void queryPessimisticLockHandle() {
-        SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
-        Session session = null;
-        try {
-            session = factory.getCurrentSession();
+    public static void queryPessimisticLockHandle(SessionFactory factory) {
+        try (Session session = factory.getCurrentSession()) {
             session.beginTransaction();
             BigDecimal totalCost = new BigDecimal(0);
-            List<Product> products = session.createQuery("SELECT p FROM Product p WHERE p.title = :title;", Product.class) // тут можем идти допустим по категориям
+            List<Product> products = session.createQuery("SELECT p FROM Product p WHERE p.title = :title", Product.class) // тут можем идти допустим по категориям
                     .setLockMode(LockModeType.PESSIMISTIC_READ) // FOR UPDATE
                     .setHint("javax.persistence.lock.timeout", 5000)
                     .setParameter("title", "Sprite")
@@ -182,18 +152,10 @@ public class MainApp {
                 totalCost.add(p.price);
             }
             session.getTransaction().commit();
-        } finally {
-            factory.close();
-            if (session != null) {
-                session.close();
-            }
         }
     }
 
-    public static void rollbackEx() {
-        SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
+    public static void rollbackEx(SessionFactory factory) {
         Session session = null;
         try {
             session = factory.getCurrentSession();
@@ -219,22 +181,12 @@ public class MainApp {
         }
     }
 
-    public static void prepareData() throws IOException {
-        SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
-        Session session = null;
-        try {
+    public static void prepareData(SessionFactory factory) throws IOException {
+        try (Session session = factory.getCurrentSession()) {
             String sql = Files.lines(Paths.get("drop-and-create.sql")).collect(Collectors.joining(" "));
-            session = factory.getCurrentSession();
             session.beginTransaction();
             session.createNativeQuery(sql).executeUpdate();
             session.getTransaction().commit();
-        } finally {
-            factory.close();
-            if (session != null) {
-                session.close();
-            }
         }
     }
 
