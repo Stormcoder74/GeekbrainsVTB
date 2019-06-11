@@ -1,0 +1,156 @@
+================================
+Теряев Сергей ДЗ 13
+https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less13
+================================
+package com.geekbrains.teryaevs.configs;
+
+@Configuration
+@ComponentScan("com.geekbrains.teryaevs")
+public class AppConfig {
+}
+
+package com.geekbrains.teryaevs.enttities;
+
+import java.util.Objects;
+
+public class Product {
+    private long id;
+    private String title;
+    private double cost;
+
+    public Product(long id, String title, double cost) {
+        this.id = id;
+        this.title = title;
+        this.cost = cost;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    @Override
+    public String toString() {
+        return title + ": " + cost;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(title, product.title);
+    }
+}
+
+@Component
+public class Cart {
+    private List<Product> cart;
+
+    @PostConstruct
+    void initCart() {
+        cart = new ArrayList<>();
+    }
+
+    public void add(Product product) {
+        cart.add(product);
+        System.out.println("\n" + product.getTitle() + " added to the cart");
+    }
+
+    public List<Product> getProducts() {
+        return cart;
+    }
+}
+
+package com.geekbrains.teryaevs.services;
+
+public interface ProductService {
+    void printAll();
+    Product findByTitle(String title);
+}
+
+@Component
+public class SimpleProductService implements ProductService {
+    private List<Product> productList;
+
+    @PostConstruct
+    private void initProductList() {
+        productList = Arrays.asList(
+                new Product(1, "milk", 65),
+                new Product(2, "bread", 45),
+                new Product(3, "butter", 145),
+                new Product(4, "pork", 280),
+                new Product(5, "beef", 320),
+                new Product(6, "sausage", 650),
+                new Product(7, "beer", 180),
+                new Product(8, "coffee", 170),
+                new Product(9, "sugar", 55),
+                new Product(10, "tea", 120)
+        );
+    }
+
+    @Override
+    public void printAll(){
+        System.out.println();
+        for (Product product : productList){
+            System.out.println(product);
+        }
+    }
+
+    @Override
+    public Product findByTitle(String title){
+        return productList.get(productList.indexOf(new Product(0, title, 0)));
+    }
+}
+
+public interface OrderService {
+    void makeOrder();
+}
+
+@Component
+public class SimpleOrderService implements OrderService {
+    private Cart cart;
+
+    @Autowired
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    @Override
+    public void makeOrder() {
+        double totalCost = 0;
+
+        System.out.println("\nOrder contains:");
+        System.out.println("--------------------");
+        for (Product product : cart.getProducts()) {
+            System.out.println(product);
+            totalCost += product.getCost();
+        }
+        System.out.println("--------------------");
+        System.out.println("total cost is: " + totalCost);
+    }
+}
+
+package com.geekbrains.teryaevs;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        ProductService productService = context.getBean("simpleProductService", SimpleProductService.class);
+        Cart cart = context.getBean("cart", Cart.class);
+        OrderService orderService = context.getBean("simpleOrderService", SimpleOrderService.class);
+
+        productService.printAll();
+
+        cart.add(productService.findByTitle("bread"));
+        cart.add(productService.findByTitle("sausage"));
+        cart.add(productService.findByTitle("coffee"));
+        cart.add(productService.findByTitle("sugar"));
+
+        orderService.makeOrder();
+    }
+}
