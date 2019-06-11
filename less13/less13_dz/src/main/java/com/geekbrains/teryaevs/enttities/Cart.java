@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class SimpleCart implements Cart {
-    List<Product> cart;
-
-    public List<Product> getProducts() {
-        return cart;
-    }
+public class Cart {
+    private List<Product> cart;
 
     @PostConstruct
-    void initCart(){
+    void initCart() {
         cart = new ArrayList<>();
     }
 
-    @Override
     public void add(Product product) {
         cart.add(product);
+        System.out.println("\n" + product.getTitle() + " added to the cart");
+    }
+
+    public List<Product> getProducts() {
+        return cart;
     }
 }

@@ -8,12 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class ProductServiceImpl implements ProductService {
+public class SimpleProductService implements ProductService {
     private List<Product> productList;
-
-    public List<Product> getProductList() {
-        return productList;
-    }
 
     @PostConstruct
     private void initProductList() {
@@ -33,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void printAll(){
+        System.out.println();
         for (Product product : productList){
             System.out.println(product);
         }
