@@ -1,11 +1,11 @@
 package com.geekbrains.teryaevs.services;
 
+import com.geekbrains.teryaevs.entities.Filter;
 import com.geekbrains.teryaevs.entities.Product;
 import com.geekbrains.teryaevs.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ProductsService {
@@ -16,15 +16,23 @@ public class ProductsService {
         this.productRepository = productRepository;
     }
 
-    public Optional<Product> getById(Long id) {
-        return productRepository.findById(id);
-    }
-
-    public Iterable<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Product getById(Long id) {
+        return productRepository.findById(id).orElse(new Product(0L, "none", 0d));
     }
 
     public void add(Product product) {
-        productRepository.save(product);
+        if (!product.getTitle().equals("") &&
+                product.getPrice() > 0) {
+            productRepository.save(product);
+        }
+    }
+
+    public Iterable<Product> getAllProducts() {
+        return productRepository.findAll(new Sort(Sort.Direction.ASC, "id"));
+    }
+
+    public Iterable<Product> getFilteredProducts(Filter filter) {
+        return productRepository.findAllByTitleContainsAndPriceBetween(
+                filter.getTitlesPart(), filter.getPriceMin(), filter.getPriceMax());
     }
 }

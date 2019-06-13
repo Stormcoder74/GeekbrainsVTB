@@ -25,7 +25,8 @@
             <td th:text="${product.title}"/>
             <td th:text="${product.price}"/>
             <td>
-                <a th:href="@{'/products/show/' + ${product.id}}" th:text="Просмотреть"/>
+                <a th:href="@{'/products/show/' + ${product.id}}" th:text="Просмотреть"/><br>
+                <a th:href="@{'/products/edit/' + ${product.id}}" th:text="Редактировать"/>
             </td>
         </tr>
         </tbody>
@@ -52,7 +53,29 @@
 
         <div style="margin-top: 10px" class="form-group">
             <div class="col-sm-6 controls">
-                <button type="submit" class="btn btn-primary">Add</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </form>
+    <br>
+    <h2>Filter</h2>
+    <form th:action="@{/products/filter}"
+          th:object="${filter}" method="post" class="form-horizontal">
+
+        <div style="margin-bottom: 25px" class="input-group">
+            <span class="input-group-addon">title filter</span>
+            <input th:field="*{titlesPart}" placeholder="title filter" class="form-control"/>
+        </div>
+
+        <div style="margin-bottom: 25px" class="input-group">
+            <span class="input-group-addon">price filter</span>
+            <input th:field="*{priceMin}" placeholder="price minimum" class="form-control"/>
+            <input th:field="*{priceMax}" placeholder="price maximum" class="form-control"/>
+        </div>
+
+        <div style="margin-top: 10px" class="form-group">
+            <div class="col-sm-6 controls">
+                <button type="submit" class="btn btn-primary">Filter</button>
             </div>
         </div>
     </form>
