@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/products")
 public class ProductsController {
@@ -18,41 +20,13 @@ public class ProductsController {
         this.productsService = productsService;
     }
 
-    @PostMapping("/add")
-    public String addProduct(@ModelAttribute(value = "product") Product product) {
-        productsService.add(product);
-        return "redirect:/products";
-    }
-
-    @GetMapping("/show/{id}")
-    public String showOneProduct(Model model, @PathVariable(value = "id") Long id) {
-        Product product = productsService.getById(id);
-        model.addAttribute("product", product);
-        return "product-page";
-    }
-
     @GetMapping
-    public String showProductsList(Model model) {
-        model.addAttribute("product", new Product());
-        model.addAttribute("products", productsService.getAllProducts());
-        model.addAttribute("filter", new Filter());
-        return "products";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String editOneProduct(Model model,
-                                 @PathVariable(value = "id") Long id) {
-        model.addAttribute("product", productsService.getById(id));
-        model.addAttribute("products", productsService.getAllProducts());
-        model.addAttribute("filter", new Filter());
-        return "products";
-    }
-
-    @PostMapping("/filter")
-    public String showFilteredProductsList(Model model,
-                                           @ModelAttribute(value = "filter") Filter filter) {
-        model.addAttribute("product", new Product());
-        model.addAttribute("products", productsService.getFilteredProducts(filter));
+    public String showProductsList(Model model, @ModelAttribute(value = "filter") Filter filter,
+                                   @RequestParam(name = "page", required = false) Integer page) {
+        if (page == null)
+            page = 0;
+        List<Product> content = productsService.getAllProducts(filter, page).getContent();
+        model.addAttribute("products", content);
         model.addAttribute("filter", filter);
         return "products";
     }

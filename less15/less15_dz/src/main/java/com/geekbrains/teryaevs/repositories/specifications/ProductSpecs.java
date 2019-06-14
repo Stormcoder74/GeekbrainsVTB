@@ -9,12 +9,12 @@ public class ProductSpecs {
                 criteriaBuilder.like(root.get("title"), "%" + titlesPart + "%");
     }
 
-    public static Specification<Product> costGreaterThanOrEq(int value) {
+    public static Specification<Product> priceGreaterThanOrEq(double value) {
         return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.greaterThanOrEqualTo(root.get("price"), value);
     }
 
-    public static Specification<Product> costLesserThanOrEq(int value) {
+    public static Specification<Product> priceLesserThanOrEq(double value) {
         return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.lessThanOrEqualTo(root.get("price"), value);
     }

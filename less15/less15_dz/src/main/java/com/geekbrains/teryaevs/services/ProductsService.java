@@ -3,11 +3,12 @@ package com.geekbrains.teryaevs.services;
 import com.geekbrains.teryaevs.entities.Filter;
 import com.geekbrains.teryaevs.entities.Product;
 import com.geekbrains.teryaevs.repositories.ProductRepository;
+import com.geekbrains.teryaevs.repositories.specifications.ProductSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductsService {
@@ -18,23 +19,19 @@ public class ProductsService {
         this.productRepository = productRepository;
     }
 
-    public Product getById(Long id) {
-        return productRepository.findById(id).orElse(new Product(0L, "none", 0d));
-    }
-
-    public void add(Product product) {
-        if (!product.getTitle().equals("") &&
-                product.getPrice() > 0) {
-            productRepository.save(product);
+    public Page<Product> getAllProducts(Filter filter, int page) {
+        Specification<Product> spec = Specification.where(null);
+        if (filter != null) {
+            if (!filter.getTitlesPart().equals("")) {
+                spec = spec.and(ProductSpecs.titleContains(filter.getTitlesPart()));
+            }
+            if (filter.getPriceMin() != 0) {
+                spec = spec.and(ProductSpecs.priceLesserThanOrEq(filter.getPriceMin()));
+            }
+            if (filter.getPriceMax() < Double.MAX_VALUE) {
+                spec = spec.and(ProductSpecs.priceGreaterThanOrEq(filter.getPriceMax()));
+            }
         }
-    }
-
-    public List<Product> getAllProducts() {
-        return productRepository.findAll(new Sort(Sort.Direction.ASC, "id"));
-    }
-
-    public List<Product> getFilteredProducts(Filter filter) {
-        return productRepository.findAllByTitleContainsAndPriceBetween(
-                filter.getTitlesPart(), filter.getPriceMin(), filter.getPriceMax());
+        return productRepository.findAll(spec, PageRequest.of(page, 10));
     }
 }

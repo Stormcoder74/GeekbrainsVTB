@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.geekbrains</groupId>
-	<artifactId>less14_demo</artifactId>
+	<artifactId>less15_dz</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>less15_dz</name>
 	<description>Lesson 15 homework</description>
