@@ -1,17 +1,11 @@
 package com.geekbrains.teryaevs.entities;
 
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-
-@Component
 public class Filter {
     private String titlesPart;
     private double priceMin;
     private double priceMax;
 
-    @PostConstruct
-    private void initFilter() {
+    public Filter() {
         titlesPart = "";
         priceMin = 0;
         priceMax = Double.MAX_VALUE;

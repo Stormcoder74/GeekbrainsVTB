@@ -4,5 +4,6 @@ package com.geekbrains.teryaevs.configurations;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SecurityWebApplicationInitializer  extends AbstractSecurityWebApplicationInitializer {
+public class SecurityWebApplicationInitializer
+        extends AbstractSecurityWebApplicationInitializer {
 }
