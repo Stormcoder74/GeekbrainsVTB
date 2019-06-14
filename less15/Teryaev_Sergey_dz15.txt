@@ -1,0 +1,82 @@
+================================
+Теряев Сергей ДЗ 15
+https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less15
+================================
+package com.geekbrains.teryaevs.repositories.specifications;
+
+public class ProductSpecs {
+    public static Specification<Product> titleContains(String titlesPart) {
+        return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("title"), "%" + titlesPart + "%");
+    }
+
+    public static Specification<Product> priceGreaterThanOrEq(double value) {
+        return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.greaterThanOrEqualTo(root.get("price"), value);
+    }
+
+    public static Specification<Product> priceLesserThanOrEq(double value) {
+        return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.lessThanOrEqualTo(root.get("price"), value);
+    }
+}
+
+package com.geekbrains.teryaevs.controllers;
+
+@Controller
+@RequestMapping("/products")
+public class ProductsController {
+    private ProductsService productsService;
+
+    @Autowired
+    public void setProductsService(ProductsService productsService) {
+        this.productsService = productsService;
+    }
+
+    @GetMapping
+    public String showProductsList(Model model, @ModelAttribute(value = "filter") Filter filter,
+                                   @RequestParam(name = "page", required = false) Integer page) {
+        if (page == null)
+            page = 0;
+        List<Product> content = productsService.getAllProducts(filter, page).getContent();
+        model.addAttribute("products", content);
+        model.addAttribute("filter", filter);
+        return "products";
+    }
+}
+
+package com.geekbrains.teryaevs.services;
+
+@Service
+public class ProductsService {
+    private ProductRepository productRepository;
+
+    @Autowired
+    public void setProductRepository(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    public Page<Product> getAllProducts(Filter filter, int page) {
+        Specification<Product> spec = Specification.where(null);
+        if (filter != null) {
+            if (!filter.getTitlesPart().equals("")) {
+                spec = spec.and(ProductSpecs.titleContains(filter.getTitlesPart()));
+            }
+            if (filter.getPriceMin() != 0) {
+                spec = spec.and(ProductSpecs.priceLesserThanOrEq(filter.getPriceMin()));
+            }
+            if (filter.getPriceMax() < Double.MAX_VALUE) {
+                spec = spec.and(ProductSpecs.priceGreaterThanOrEq(filter.getPriceMax()));
+            }
+        }
+        return productRepository.findAll(spec, PageRequest.of(page, 10));
+    }
+}
+
+package com.geekbrains.teryaevs.repositories;
+
+@Repository
+public interface ProductRepository extends
+        PagingAndSortingRepository<Product, Long>,
+        JpaSpecificationExecutor<Product> {
+}

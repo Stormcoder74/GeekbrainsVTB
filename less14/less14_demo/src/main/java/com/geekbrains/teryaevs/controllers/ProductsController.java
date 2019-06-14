@@ -12,16 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/products")
 public class ProductsController {
     private ProductsService productsService;
-    private Filter filter;
 
     @Autowired
     public void setProductsService(ProductsService productsService) {
         this.productsService = productsService;
-    }
-
-    @Autowired
-    public void setFilter(Filter filter) {
-        this.filter = filter;
     }
 
     @PostMapping("/add")
@@ -41,7 +35,7 @@ public class ProductsController {
     public String showProductsList(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("products", productsService.getAllProducts());
-        model.addAttribute("filter", filter);
+        model.addAttribute("filter", new Filter());
         return "products";
     }
 
@@ -50,23 +44,16 @@ public class ProductsController {
                                  @PathVariable(value = "id") Long id) {
         model.addAttribute("product", productsService.getById(id));
         model.addAttribute("products", productsService.getAllProducts());
-        model.addAttribute("filter", filter);
+        model.addAttribute("filter", new Filter());
         return "products";
     }
 
     @PostMapping("/filter")
     public String showFilteredProductsList(Model model,
                                            @ModelAttribute(value = "filter") Filter filter) {
-        copyFilter(filter);
         model.addAttribute("product", new Product());
         model.addAttribute("products", productsService.getFilteredProducts(filter));
         model.addAttribute("filter", filter);
         return "products";
-    }
-
-    private void copyFilter(Filter filter){
-        this.filter.setTitlesPart(filter.getTitlesPart());
-        this.filter.setPriceMin(filter.getPriceMin());
-        this.filter.setPriceMax(filter.getPriceMax());
     }
 }
