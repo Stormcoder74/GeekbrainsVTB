@@ -22,8 +22,6 @@ public class ItemsService {
     }
 
     public Page<Item> getItemsWithPagingAndFiltering(Specification<Item> specifications, Pageable pageable) {
-
-
         return itemRepository.findAll(specifications, pageable);
     }
 }
