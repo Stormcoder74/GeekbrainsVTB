@@ -12,11 +12,24 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductsService {
+    private static final int ROWS_ON_PAGE = 5;
     private ProductRepository productRepository;
 
     @Autowired
     public void setProductRepository(ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+
+    public Product getById(Long id) {
+        return productRepository.findById(id).orElse(new Product(0L, "none", 0d));
+    }
+
+    public void save(Product product) {
+            productRepository.save(product);
+    }
+
+    public void delete(Long id) {
+        productRepository.deleteById(id);
     }
 
     public Page<Product> getAllProducts(Filter filter, int page) {
@@ -26,12 +39,12 @@ public class ProductsService {
                 spec = spec.and(ProductSpecs.titleContains(filter.getTitlesPart()));
             }
             if (filter.getPriceMin() != 0) {
-                spec = spec.and(ProductSpecs.priceLesserThanOrEq(filter.getPriceMin()));
+                spec = spec.and(ProductSpecs.priceGreaterThanOrEq(filter.getPriceMin()));
             }
             if (filter.getPriceMax() != 0) {
-                spec = spec.and(ProductSpecs.priceGreaterThanOrEq(filter.getPriceMax()));
+                spec = spec.and(ProductSpecs.priceLesserThanOrEq(filter.getPriceMax()));
             }
         }
-        return productRepository.findAll(spec, PageRequest.of(page, 2));
+        return productRepository.findAll(spec, PageRequest.of(page, ROWS_ON_PAGE));
     }
 }

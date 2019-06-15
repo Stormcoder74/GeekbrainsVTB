@@ -32,10 +32,6 @@ public class Filter {
     }
 
     public void setPriceMax(double priceMax) {
-        if (priceMax == 0) {
-            this.priceMax = Double.MAX_VALUE;
-        } else {
             this.priceMax = priceMax;
-        }
     }
 }

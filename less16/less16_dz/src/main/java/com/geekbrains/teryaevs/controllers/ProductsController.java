@@ -8,8 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/products")
 public class ProductsController {
@@ -25,9 +23,32 @@ public class ProductsController {
                                    @RequestParam(name = "page", required = false) Integer page) {
         if (page == null)
             page = 0;
-        List<Product> content = productsService.getAllProducts(filter, page).getContent();
-        model.addAttribute("products", content);
+        model.addAttribute("products", productsService.getAllProducts(filter, page).getContent());
         model.addAttribute("filter", filter);
         return "products";
+    }
+
+    @GetMapping("/add")
+    public String addProduct(Model model) {
+        model.addAttribute("product", new Product());
+        return "product-page";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editOneProduct(Model model, @PathVariable(value = "id") Long id) {
+        model.addAttribute("product", productsService.getById(id));
+        return "product-page";
+    }
+
+    @PostMapping("/save")
+    public String saveProduct(@ModelAttribute("product") Product product) {
+        productsService.save(product);
+        return "redirect:/products";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String editOneProduct(@PathVariable(value = "id") Long id) {
+        productsService.delete(id);
+        return "redirect:/products";
     }
 }
