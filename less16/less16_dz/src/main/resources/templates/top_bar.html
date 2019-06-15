@@ -12,10 +12,6 @@
 
 <div class="fluid-container" th:fragment="bar(activeTab, studentId)">
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary ">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li sec:authorize="hasRole('ADMIN')" class="nav-item"
@@ -33,20 +29,17 @@
                 </li>
                 <li sec:authorize="isAuthenticated()" class="nav-item">
                     <div>
-                        <a th:href="@{/users/profile}" sec:authentication="principal.username"/>
                         <form th:action="@{/logout}" method="POST">
-                            <input type="submit" class="btn btn-danger" value="Logout"/>
+                            <a href="#" class="btn btn-success" sec:authentication="principal.username"/>
+                            <input type="submit" class="btn btn-success" value="Logout"/>
                         </form>
                     </div>
                 </li>
                 <li sec:authorize="isAnonymous()" class="nav-item">
                     <form th:action="@{/login}" method="GET">
-                        <input type="submit" class="btn btn-primary" value="Login"/>
+                        <input type="submit" class="btn btn-warning" value="Login"/>
                     </form>
                 </li>
-                <!--<li sec:authorize="isAuthenticated()" class="nav-item">-->
-                <!--<a th:href="@{/users/profile}" sec:authentication="principal.username"/>-->
-                <!--</li>-->
             </ul>
         </div>
     </nav>

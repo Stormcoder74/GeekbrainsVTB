@@ -1,4 +1,4 @@
-package com.geekbrains.controllers;
+package com.geekbrains.teryaevs.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,16 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LoginController {
     @GetMapping("/login")
     public String showMyLoginPage() {
-        return "modern-login";
+        return "login";
     }
 
     @GetMapping("/accessDenied")
     public String showAccessDeniedPage() {
         return "access-denied";
     }
-
-//    @GetMapping("/ohSh")
-//    public String ohSh() {
-//        return "plain-login";
-//    }
 }
