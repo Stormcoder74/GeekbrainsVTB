@@ -36,9 +36,13 @@
                     </div>
                 </li>
                 <li sec:authorize="isAnonymous()" class="nav-item">
-                    <form th:action="@{/login}" method="GET">
-                        <input type="submit" class="btn btn-warning" value="Login"/>
-                    </form>
+                    <div>
+                        <form th:action="@{/authenticateTheUser}" method="post" class="input-group">
+                            <input type="text" name="username" placeholder="username" class="form-control">
+                            <input type="password" name="password" placeholder="password" class="form-control">
+                            <button type="submit" class="btn btn-success">Login</button>
+                        </form>
+                    </div>
                 </li>
             </ul>
         </div>
