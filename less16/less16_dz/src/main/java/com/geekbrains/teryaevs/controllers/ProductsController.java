@@ -22,8 +22,8 @@ public class ProductsController {
     public String showProductsList(Model model, @ModelAttribute(value = "filter") Filter filter,
                                    @RequestParam(name = "page", required = false) Integer page) {
         if (page == null)
-            page = 0;
-        model.addAttribute("products", productsService.getAllProducts(filter, page).getContent());
+            page = 0; // todo переходит на лишнюю страницу вперед
+        model.addAttribute("products", productsService.getAllProducts(filter, page));
         model.addAttribute("filter", filter);
         return "products";
     }

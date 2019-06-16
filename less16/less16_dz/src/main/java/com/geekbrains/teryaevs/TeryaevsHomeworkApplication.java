@@ -11,3 +11,4 @@ public class TeryaevsHomeworkApplication {
 	}
 
 }
+// todo 00:16:55 - в поле ввода цены фильтра вместо нуля подсказка https://yadi.sk/i/OlCD4Hlng2APZw как реализовать в моем случае
