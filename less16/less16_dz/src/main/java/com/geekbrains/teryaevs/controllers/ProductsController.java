@@ -40,6 +40,12 @@ public class ProductsController {
         return "product-page";
     }
 
+    @GetMapping("/show/{id}")
+    public String showOneProduct(Model model, @PathVariable(value = "id") Long id) {
+        model.addAttribute("product", productsService.getById(id));
+        return "show-product";
+    }
+
     @PostMapping("/save")
     public String saveProduct(@ModelAttribute("product") Product product) {
         productsService.save(product);
