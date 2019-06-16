@@ -23,7 +23,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${products}">
+        <tr th:each="product : ${products.getContent()}">
             <td th:text="${product.id}"/>
             <td th:text="${product.title}"/>
             <td th:text="${product.price}"/>
@@ -34,6 +34,15 @@
         </tr>
         </tbody>
     </table>
+    <div>
+        <a th:if="${products.getNumber()} gt 0"
+           th:href="@{'/products?page=' + ${products.getNumber() - 1} + '&titlesPart=' + ${filter.titlesPart} +
+                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="'<- '"/>
+        <span th:text="'page ' + ${products.getNumber() + 1}"/>
+        <a th:if="${products.getNumber()} lt ${products.getNumberOfElements()}"
+           th:href="@{'/products?page=' + ${products.getNumber() + 1} + '&titlesPart=' + ${filter.titlesPart} +
+                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="' ->'"/>
+    </div>
     <div sec:authorize="hasAnyRole('ADMIN')">
         <form th:action="@{/products/add}" method="get" class="form-horizontal">
             <div style="margin-top: 10px" class="form-group">
@@ -62,22 +71,6 @@
             <div class="col-sm-6 controls">
                 <button type="submit" class="btn btn-primary">Filter</button>
             </div>
-        </div>
-        <div>
-            <a th:href="@{'/products?page=0&titlesPart=' + ${filter.titlesPart} +
-                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="'1, '"/>
-            <a th:href="@{'/products?page=1&titlesPart=' + ${filter.titlesPart} +
-                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="'2, '"/>
-            <a th:href="@{'/products?page=2&titlesPart=' + ${filter.titlesPart} +
-                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="'3, '"/>
-            <a th:href="@{'/products?page=3&titlesPart=' + ${filter.titlesPart} +
-                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="'4, '"/>
-            <a th:href="@{'/products?page=4&titlesPart=' + ${filter.titlesPart} +
-                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="'5, '"/>
-            <a th:href="@{'/products?page=5&titlesPart=' + ${filter.titlesPart} +
-                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="'6, '"/>
-            <a th:href="@{'/products?page=6&titlesPart=' + ${filter.titlesPart} +
-                '&priceMin=' + ${filter.priceMin} + '&priceMax=' + ${filter.priceMax}}" th:text="'7 '"/>
         </div>
     </form>
     <br><br><br><br><br>
