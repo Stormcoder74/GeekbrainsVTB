@@ -1,5 +1,8 @@
 package com.geekbrains.teryaevs.entities;
 
+import lombok.Data;
+
+@Data
 public class Filter {
     private String titlesPart;
     private double priceMin;
@@ -9,29 +12,5 @@ public class Filter {
         titlesPart = "";
         priceMin = 0;
         priceMax = 0;
-    }
-
-    public String getTitlesPart() {
-        return titlesPart;
-    }
-
-    public void setTitlesPart(String titlesPart) {
-        this.titlesPart = titlesPart;
-    }
-
-    public double getPriceMin() {
-        return priceMin;
-    }
-
-    public void setPriceMin(double priceMin) {
-        this.priceMin = priceMin;
-    }
-
-    public double getPriceMax() {
-        return priceMax;
-    }
-
-    public void setPriceMax(double priceMax) {
-            this.priceMax = priceMax;
     }
 }
