@@ -13,9 +13,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
-
     private Double price;
 
     public Product(Long id, String title, Double price) {

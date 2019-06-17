@@ -1,19 +1,25 @@
-package com.geekbrains.teryaevs.entities;
+package com.geekbrains.teryaevs.aspects;
 
+import com.geekbrains.teryaevs.services.StatisticService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
 public class Statistic {
-    @Before("execution(public String com.geekbrains.teryaevs.controllers.ProductsController.showOneProduct(..))") // pointcut expression
+    private StatisticService statisticService;
+
+    @Autowired
+    public void setStatisticService(StatisticService statisticService) {
+        this.statisticService = statisticService;
+    }
+
+    @Before("execution(public String com.geekbrains.teryaevs.controllers.ProductsController.showOneProduct(..))")
     public void beforeAnyMethodInUserDAOClassWithDetails(JoinPoint joinPoint) {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        System.out.println("В UserDAO был вызван метод: " + methodSignature);
         Object[] args = joinPoint.getArgs();
-            System.out.println("Был просмотрен продукт с ID " + args[1]);
+        statisticService.update((long) args[1]);
     }
 }

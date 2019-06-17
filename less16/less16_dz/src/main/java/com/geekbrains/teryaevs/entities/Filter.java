@@ -13,4 +13,8 @@ public class Filter {
         priceMin = 0;
         priceMax = 0;
     }
+
+    public String getTitlesPart() {
+        return titlesPart;
+    }
 }

@@ -9,10 +9,14 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Table(schema = "boot", name = "statistic")
-public class ProducStatistic {
+public class ProductStatistic {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column("")
+    @Column(name = "product_id")
     private Long productId;
-    private int wiews;
+    private int views;
+
+    public ProductStatistic(Long productId, int views) {
+        this.productId = productId;
+        this.views = views;
+    }
 }

@@ -11,7 +11,7 @@
 </head>
 
 <body>
-<div th:replace="~{top_bar :: bar(ProductsList, 0)}"/>
+<div th:replace="~{top_bar :: bar(ProductsList)}"/>
 <div class="container">
     <table class="table table-hover">
         <thead>
@@ -19,7 +19,8 @@
             <th>ID</th>
             <th>Название товара</th>
             <th>Цена</th>
-            <td sec:authorize="hasAnyRole('ADMIN')">Действия</th>
+            <td sec:authorize="hasAnyRole('ADMIN')">Действия
+            </th>
         </tr>
         </thead>
         <tbody>

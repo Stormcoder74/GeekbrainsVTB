@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<div class="fluid-container" th:fragment="bar(activeTab, studentId)">
+<div class="fluid-container" th:fragment="bar(activeTab)">
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary ">
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
@@ -26,6 +26,9 @@
                 </li>
                 <li class="nav-item" th:classappend="${activeTab == 'ProductDetails' ? 'active' : ''}">
                     <a class="nav-link" th:href="@{#}" th:text="'Product details'"></a>
+                </li>
+                <li class="nav-item" th:classappend="${activeTab == 'Statistic' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{/statistic/products}" th:text="'Statistic'"></a>
                 </li>
                 <li sec:authorize="isAuthenticated()" class="nav-item">
                     <div>
