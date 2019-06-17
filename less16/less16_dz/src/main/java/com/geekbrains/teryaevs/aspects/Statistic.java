@@ -18,7 +18,7 @@ public class Statistic {
     }
 
     @Before("execution(public String com.geekbrains.teryaevs.controllers.ProductsController.showOneProduct(..))")
-    public void beforeAnyMethodInUserDAOClassWithDetails(JoinPoint joinPoint) {
+    public void beforeShowOneProductMethodInProductsController(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         statisticService.update((long) args[1]);
     }

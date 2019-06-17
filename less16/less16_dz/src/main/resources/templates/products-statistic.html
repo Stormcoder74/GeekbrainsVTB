@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
@@ -20,13 +19,15 @@
             <thead>
             <tr>
                 <th>Название товара</th>
+                <th>Цена товара</th>
                 <th>Просмотрен раз</th>
                 </th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="stat : ${statistic}">
-                <td th:text="${stat.getProductId()}"/>
+                <td th:text="${stat.getProduct().getTitle()}"/>
+                <td th:text="${stat.getProduct().getPrice()}"/>
                 <td th:text="${stat.getViews()}"/>
             </tr>
             </tbody>

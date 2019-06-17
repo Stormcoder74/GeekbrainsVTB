@@ -7,6 +7,7 @@ import com.geekbrains.teryaevs.services.specifications.ProductSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,6 @@ public class ProductsService {
                 spec = spec.and(ProductSpecs.priceLesserThanOrEq(filter.getPriceMax()));
             }
         }
-        return productRepository.findAll(spec, PageRequest.of(page, ROWS_ON_PAGE));
+        return productRepository.findAll(spec, PageRequest.of(page, ROWS_ON_PAGE, Sort.by("id")));
     }
 }

@@ -11,12 +11,17 @@ import javax.persistence.*;
 @Table(schema = "boot", name = "statistic")
 public class ProductStatistic {
     @Id
-    @Column(name = "product_id")
-    private Long productId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     private int views;
 
-    public ProductStatistic(Long productId, int views) {
-        this.productId = productId;
+    public ProductStatistic(Product product, int views) {
+        this.product = product;
         this.views = views;
     }
 }
