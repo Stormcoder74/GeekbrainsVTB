@@ -20,23 +20,17 @@
             <thead>
             <tr>
                 <th>Название товара</th>
-                <th>Просмотрен</th>
-                <td sec:authorize="hasAnyRole('ADMIN')">Действия
+                <th>Просмотрен раз</th>
                 </th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="product : ${statistic}">
-                <td th:text="${product.}"/>
-                <td th:text="${product.price}"/>
-                <td sec:authorize="hasAnyRole('ADMIN')">
-                    <a th:href="@{'/products/show/' + ${product.id}}" th:text="Посмотреть"/><br>
-                    <a th:href="@{'/products/edit/' + ${product.id}}" th:text="Редактировать"/><br>
-                    <a th:href="@{'/products/delete/' + ${product.id}}" th:text="Удалить"/>
-                </td>
+            <tr th:each="stat : ${statistic}">
+                <td th:text="${stat.getProductId()}"/>
+                <td th:text="${stat.getViews()}"/>
             </tr>
             </tbody>
-        </table>"${'Price: ' + product.price}"/><br>
+        </table>
     </div>
 </div>
 </body>

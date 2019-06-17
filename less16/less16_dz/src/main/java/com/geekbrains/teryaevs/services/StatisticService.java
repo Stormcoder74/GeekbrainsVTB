@@ -26,7 +26,7 @@ public class StatisticService {
         statisticRepository.save(statistic);
     }
 
-    public List<ProductStatistic> getProductStatistic(){
+    public List<ProductStatistic> getStatistic(){
         return statisticRepository.findTop3ByOrderByViewsDesc();
     }
 }

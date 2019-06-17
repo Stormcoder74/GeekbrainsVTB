@@ -19,7 +19,8 @@
             <th>ID</th>
             <th>Название товара</th>
             <th>Цена</th>
-            <td sec:authorize="hasAnyRole('ADMIN')">Действия
+            <th>Действия
+                <!--sec:authorize="hasAnyRole('ADMIN')"-->
             </th>
         </tr>
         </thead>
@@ -28,7 +29,8 @@
             <td th:text="${product.id}"/>
             <td th:text="${product.title}"/>
             <td th:text="${product.price}"/>
-            <td sec:authorize="hasAnyRole('ADMIN')">
+            <td>
+                <!--sec:authorize="hasAnyRole('ADMIN')"-->
                 <a th:href="@{'/products/show/' + ${product.id}}" th:text="Посмотреть"/><br>
                 <a th:href="@{'/products/edit/' + ${product.id}}" th:text="Редактировать"/><br>
                 <a th:href="@{'/products/delete/' + ${product.id}}" th:text="Удалить"/>

@@ -19,7 +19,7 @@ public class StatisticController {
 
     @GetMapping("products")
     public String productStatistic(Model model){
-        model.addAttribute("statistic", statisticService.getProductStatistic());
-        return "statistic";
+        model.addAttribute("statistic", statisticService.getStatistic());
+        return "products-statistic";
     }
 }
