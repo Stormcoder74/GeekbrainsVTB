@@ -9,9 +9,9 @@ public class MainApp {
 
         UserDAO userDAO = context.getBean("userDAO", UserDAO.class);
         System.out.println(userDAO.getAllUsers());
-        userDAO.setX(10);
-        System.out.println(userDAO.getX()); // странное исключение
-        userDAO.longOperation();
+//        userDAO.setX(10);
+//        System.out.println(userDAO.getX()); // странное исключение
+//        userDAO.longOperation();
 
 //        System.out.println(userDAO.getAllUsers());
 //        userDAO.setX(13);
@@ -20,7 +20,7 @@ public class MainApp {
 
 //        ExternalSystemUserDAO externalSystemUserDAO = context.getBean("externalSystemUserDAO", ExternalSystemUserDAO.class);
 
-//        userDAO.addUser();
+        userDAO.addUser();
 //        userDAO.updateUser();
 //        userDAO.deleteUser();
 //        userDAO.findAll();

@@ -18,10 +18,10 @@ public class AppLoggingAspect {
     // throws-pattern?)"
     // execution([модификатор_метода(public, *)?] [тип_возврата] [класс?] [имя_метода]([аргументы]) [исключения?]
 
-//    @Before("execution(public void com.geekbrains.aop.UserDAO.addUser())") // pointcut expression
-//    public void aopSimpleMethod() {
-//        System.out.println("AOP кусок кода");
-//    }
+    @Before("execution(public void com.geekbrains.aop.UserDAO.addUser())") // pointcut expression
+    public void aopSimpleMethod() {
+        System.out.println("AOP добавлен пользователь");
+    }
 
 //    @Before("execution(public void com.geekbrains.aop.UserDAO.addUser())") // pointcut expression
 //    public void beforeAddUserInUserDAOClass() {
