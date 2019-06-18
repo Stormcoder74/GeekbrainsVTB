@@ -56,4 +56,25 @@ public class ProductsController {
         model.addAttribute("filter", filter);
         return "products";
     }
+
+    //-------------------------------------------------------------------------
+    // REST requests
+    //-------------------------------------------------------------------------
+
+    @PostMapping
+    public void insertProduct(@RequestParam Product product) {
+        productsService.add(product);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public Product showProduct(@PathVariable Long id) {
+        return productsService.getById(id);
+    }
+
+    @RequestMapping(name = "/{id}", method = RequestMethod.DELETE)
+    public int deleteProduct(@PathVariable Long id) {
+        productsService.deleteOne(id);
+        return 200;
+    }
 }

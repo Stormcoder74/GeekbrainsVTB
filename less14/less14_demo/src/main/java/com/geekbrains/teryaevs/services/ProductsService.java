@@ -16,15 +16,15 @@ public class ProductsService {
         this.productRepository = productRepository;
     }
 
-    public Product getById(Long id) {
-        return productRepository.findById(id).orElse(new Product(0L, "none", 0d));
-    }
-
     public void add(Product product) {
         if (!product.getTitle().equals("") &&
                 product.getPrice() > 0) {
             productRepository.save(product);
         }
+    }
+
+    public Product getById(Long id) {
+        return productRepository.findById(id).orElse(new Product(0L, "none", 0d));
     }
 
     public Iterable<Product> getAllProducts() {
@@ -34,5 +34,9 @@ public class ProductsService {
     public Iterable<Product> getFilteredProducts(Filter filter) {
         return productRepository.findAllByTitleContainsAndPriceBetween(
                 filter.getTitlesPart(), filter.getPriceMin(), filter.getPriceMax());
+    }
+
+    public void deleteOne(Long id) {
+        productRepository.deleteById(id);
     }
 }
