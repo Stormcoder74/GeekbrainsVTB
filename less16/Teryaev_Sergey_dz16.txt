@@ -4,3 +4,4 @@ https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less16
 ================================
 Домашка получилась достаточно объемная.
 Копировать ее в файл не вижу смысла.
+Весь код на гите https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less16/less16_dz
