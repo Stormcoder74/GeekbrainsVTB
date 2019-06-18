@@ -16,8 +16,8 @@ public class GreetingController {
 
     @RequestMapping("/get-greeting")
     public String greeting(Model model) {
-        String answer = greetingClient.greeting();
-        model.addAttribute("greeting", answer);
-        return "greeting-view";
+        Product product = greetingClient.greeting();
+        model.addAttribute("product", product);
+        return "show-product";
     }
 }

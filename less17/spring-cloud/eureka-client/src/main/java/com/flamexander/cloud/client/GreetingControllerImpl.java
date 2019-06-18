@@ -21,8 +21,9 @@ public class GreetingControllerImpl implements GreetingController {
     private String username;
 
     @Override
-    public String greeting() {
-        return String.format("Hello from '%s'!", eurekaClient.getApplication(appName).getName());
+    public Product greeting() {
+        Product product = new Product(15L, "Orange", 45.5);
+        return product;
     }
 
     @GetMapping("/abc")
