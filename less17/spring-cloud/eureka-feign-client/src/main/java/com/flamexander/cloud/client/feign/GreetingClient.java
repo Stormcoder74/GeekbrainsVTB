@@ -5,6 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @FeignClient("geek-spring-cloud-eureka-client")
 public interface GreetingClient {
-    @RequestMapping("/greeting")
+    @RequestMapping("/product/25")
     Product greeting();
 }

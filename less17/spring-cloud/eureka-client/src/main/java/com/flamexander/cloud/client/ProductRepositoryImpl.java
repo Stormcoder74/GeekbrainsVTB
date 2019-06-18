@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GreetingControllerImpl implements GreetingController {
+public class ProductRepositoryImpl implements ProductRepository {
     @Autowired
     @Lazy
     private EurekaClient eurekaClient;
@@ -21,8 +20,8 @@ public class GreetingControllerImpl implements GreetingController {
     private String username;
 
     @Override
-    public Product greeting() {
-        Product product = new Product(15L, "Orange", 45.5);
+    public Product getProduct(Long id) {
+        Product product = new Product(id, "Orange", 45.5);
         return product;
     }
 
