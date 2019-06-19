@@ -20,8 +20,8 @@ public class DataSourceImpl implements DataSource {
     private String username;
 
     @Override
-    public String greeting(Long id) {
-        return String.format("Hello from '%s' uour ID is %d!", eurekaClient.getApplication(appName).getName(), id);
+    public Product greeting(Long id) {
+        return new Product(id, "Orange", 45.5);
     }
 
     @GetMapping("/abc")
