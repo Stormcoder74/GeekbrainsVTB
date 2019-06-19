@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GreetingControllerImpl implements GreetingController {
+public class DataSourceImpl implements DataSource {
     @Autowired
     @Lazy
     private EurekaClient eurekaClient;
@@ -21,8 +20,8 @@ public class GreetingControllerImpl implements GreetingController {
     private String username;
 
     @Override
-    public String greeting() {
-        return String.format("Hello from '%s'!", eurekaClient.getApplication(appName).getName());
+    public String greeting(Long id) {
+        return String.format("Hello from '%s' uour ID is %d!", eurekaClient.getApplication(appName).getName(), id);
     }
 
     @GetMapping("/abc")
