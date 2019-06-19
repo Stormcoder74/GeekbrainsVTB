@@ -30,9 +30,12 @@
             <td th:text="${product.price}"/>
             <td >
                 <!--sec:authorize="hasAnyRole('ADMIN')"-->
-                <a th:href="@{'/products/show/' + ${product.id}}" th:text="Посмотреть"/><br>
-                <a th:href="@{'/products/edit/' + ${product.id}}" th:text="Редактировать"/><br>
-                <a th:href="@{'/products/delete/' + ${product.id}}" th:text="Удалить"/>
+                <a th:href="@{'/product/' + ${product.id}}" th:text="Посмотреть"/><br>
+                <a th:href="@{'/product/edit_page/?id=' + ${product.id} + '&title='
+                + ${product.title} + '&price=' + ${product.price}}" th:text="Редактировать"/><br>
+                <!--в зависимости от ситуации (лучше) с просмотром можно поступить также как с редактированием-->
+                <a th:href="@{'/product/delete/' + ${product.id}}" th:text="Удалить"/>
+                <!--а вот удалять лучше по айдишнику, чтобы не генерить лишний трафик-->
             </td>
         </tr>
         </tbody>
@@ -48,7 +51,7 @@
     <!--</div>-->
     <div >
         <!--sec:authorize="hasAnyRole('ADMIN')"-->
-        <form th:action="@{/products/add}" method="get" class="form-horizontal">
+        <form th:action="@{/product/add_page}" method="get" class="form-horizontal">
             <div style="margin-top: 10px" class="form-group">
                 <button type="submit" class="btn btn-primary">Добавить товар</button>
             </div>
