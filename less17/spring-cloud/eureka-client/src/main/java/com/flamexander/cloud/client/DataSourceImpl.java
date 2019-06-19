@@ -12,22 +12,28 @@ public class DataSourceImpl implements DataSource {
     @Autowired
     @Lazy
     private EurekaClient eurekaClient;
+    private ProductsService productsService;
 
-    @Value("${spring.application.name}")
-    private String appName;
+    @Autowired
+    public void setProductsService(ProductsService productsService) {
+        this.productsService = productsService;
+    }
 
-    @Value("${userValue}")
-    private String username;
+//    @Value("${spring.application.name}")
+//    private String appName;
+//
+//    @Value("${userValue}")
+//    private String username;
 
     @Override
     public Product greeting(Long id) {
-        return new Product(id, "Orange", 45.5);
+        return productsService.getById(id);
     }
 
-    @GetMapping("/abc")
-    public void test() {
-        System.out.println(username);
-    }
+//    @GetMapping("/abc")
+//    public void test() {
+//        System.out.println(username);
+//    }
 
 
     @GetMapping("/abcr")

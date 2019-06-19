@@ -1,10 +1,12 @@
 package com.flamexander.cloud.client;
 
-//@Entity
-//@Table(schema = "boot", name = "products")
+import javax.persistence.*;
+
+@Entity
+@Table(schema = "boot", name = "products")
 public class Product {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private Double price;
