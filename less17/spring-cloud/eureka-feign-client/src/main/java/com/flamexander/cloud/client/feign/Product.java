@@ -1,7 +1,9 @@
 package com.flamexander.cloud.client.feign;
 
+import java.util.ArrayList;
+
 public class Product {
-    final long serialVersionUID = -3893781989609414338L;
+    private static final long serialVersionUID = -3893781989609414338L;
 
     private Long id;
     private String title;
