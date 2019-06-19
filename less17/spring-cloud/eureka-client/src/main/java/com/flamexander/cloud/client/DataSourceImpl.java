@@ -17,12 +17,6 @@ public class DataSourceImpl implements DataSource {
         this.productsService = productsService;
     }
 
-//    @Value("${spring.application.name}")
-//    private String appName;
-//
-//    @Value("${userValue}")
-//    private String username;
-
     @Override
     public Product product(Long id) {
         return productsService.getById(id);
@@ -36,5 +30,10 @@ public class DataSourceImpl implements DataSource {
     @Override
     public void save(Product product) {
         productsService.save(product);
+    }
+
+    @Override
+    public void delete(Long id) {
+        productsService.delete(id);
     }
 }

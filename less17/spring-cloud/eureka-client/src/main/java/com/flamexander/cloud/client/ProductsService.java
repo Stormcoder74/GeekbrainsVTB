@@ -1,16 +1,10 @@
 package com.flamexander.cloud.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductsService {
-    private static final int ROWS_ON_PAGE = 5;
     private ProductRepository productRepository;
 
     @Autowired
@@ -29,10 +23,6 @@ public class ProductsService {
     public void delete(Long id) {
         productRepository.deleteById(id);
     }
-
-//    public Page<Product> getAll(int page) {
-//        return productRepository.findAll(PageRequest.of(page, ROWS_ON_PAGE, Sort.by("id")));
-//    }
 
     public Iterable<Product> getAll() {
         return productRepository.findAll();

@@ -19,7 +19,7 @@ public class GreetingController {
 
     @GetMapping("/{id}")
     public String showProduct(Model model, @PathVariable Long id) {
-        Product product = greetingClient.greeting(id);
+        Product product = greetingClient.getProduct(id);
         model.addAttribute("product", product);
         return "show-product";
     }
@@ -46,6 +46,12 @@ public class GreetingController {
     @PostMapping("/save")
     public String saveProduct(@ModelAttribute("product") Product product) {
         greetingClient.saveProduct(product);
+        return "redirect:/product";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable Long id) {
+        greetingClient.deleteProduct(id);
         return "redirect:/product";
     }
 }
