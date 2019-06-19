@@ -1,8 +1,8 @@
 package com.flamexander.cloud.client.feign;
-
 //@Entity
 //@Table(schema = "boot", name = "products")
 public class Product {
+    final long serialVersionUID = -3893781989609414338L;
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

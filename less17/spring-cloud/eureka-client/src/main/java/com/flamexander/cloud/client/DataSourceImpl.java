@@ -32,4 +32,9 @@ public class DataSourceImpl implements DataSource {
     public Iterable<Product> getProducts() {
         return productsService.getAll();
     }
+
+    @Override
+    public void save(Product product) {
+        productsService.save(product);
+    }
 }

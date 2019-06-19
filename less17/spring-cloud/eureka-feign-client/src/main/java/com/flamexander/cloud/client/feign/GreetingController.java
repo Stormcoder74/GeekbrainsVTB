@@ -38,8 +38,14 @@ public class GreetingController {
     }
 
     @GetMapping("/edit_page")
-    public String showEditPage(Model model, @ModelAttribute(value = "product") Product product) {
+    public String showEditPage(Model model, @ModelAttribute("product") Product product) {
         model.addAttribute("product", product);
         return "product-page";
+    }
+
+    @PostMapping("/save")
+    public String saveProduct(@ModelAttribute("product") Product product) {
+        greetingClient.saveProduct(product);
+        return "redirect:/product";
     }
 }
