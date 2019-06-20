@@ -6,7 +6,7 @@ import com.netflix.zuul.exception.ZuulException;
 import org.springframework.cloud.netflix.zuul.ZuulFilterInitializer;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class MyFilter extends ZuulFilter {
     @Override
     public String filterType() {
@@ -20,13 +20,13 @@ public class MyFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        return false;
+        return true;
     }
 
     @Override
     public Object run() throws ZuulException {
         System.out.println(RequestContext.getCurrentContext().getRequest());
-        RequestContext.getCurrentContext().addZuulResponseHeader("hi", "hi");
+        RequestContext.getCurrentContext().addZuulResponseHeader("hi", "Ok, Zuugel");
         return RequestContext.getCurrentContext();
     }
 }
