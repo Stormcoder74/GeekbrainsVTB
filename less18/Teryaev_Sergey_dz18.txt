@@ -1,0 +1,90 @@
+================================
+Теряев Сергей ДЗ 18
+https://github.com/Stormcoder74/GeekbrainsVTB/tree/master/less18
+================================
+pom.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>spring-cloud</artifactId>
+        <groupId>com.flamexander</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>auth-server</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-cloud-starter-security-jwt</artifactId>
+        </dependency>
+        <!--==========================-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <!--<scope>runtime</scope>-->
+        </dependency>
+		
+    </dependencies>
+</project>
+//----------------------------------------
+
+application.properties
+
+server.port=8880
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres?currentSchema=boot
+spring.datasource.username=geek
+spring.datasource.password=geek
+
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+#Опция против исключения: Метод org.postgresql.jdbc.PgConnection.createClob() ещё не реализован
+//----------------------------------------
+
+package com.flamexander.auth.service;
+
+import javax.sql.DataSource;
+
+@Configuration
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+    private DataSource dataSource;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    @Bean(name = "authenticationManagerBean")
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Override
+    @Bean
+    public UserDetailsService userDetailsServiceBean() throws Exception {
+        return super.userDetailsServiceBean();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication().dataSource(dataSource);
+    }
+}
