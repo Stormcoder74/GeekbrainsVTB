@@ -1,6 +1,7 @@
 package com.flamexander.cloud.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,6 @@ public class ProductsService {
     }
 
     public Iterable<Product> getAll() {
-        return productRepository.findAll();
+        return productRepository.findAll(Sort.by("id"));
     }
 }

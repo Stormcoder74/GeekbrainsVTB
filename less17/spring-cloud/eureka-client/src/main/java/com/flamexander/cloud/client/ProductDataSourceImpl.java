@@ -3,10 +3,11 @@ package com.flamexander.cloud.client;
 import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class DataSourceImpl implements DataSource {
+public class ProductDataSourceImpl implements ProductDataSource {
     @Autowired
     @Lazy
     private EurekaClient eurekaClient;
@@ -28,7 +29,8 @@ public class DataSourceImpl implements DataSource {
     }
 
     @Override
-    public void save(Product product) {
+    public void save(Long id, String title, Double price) {
+        Product product = new Product(id == 0 ? null : id, title, price);
         productsService.save(product);
     }
 

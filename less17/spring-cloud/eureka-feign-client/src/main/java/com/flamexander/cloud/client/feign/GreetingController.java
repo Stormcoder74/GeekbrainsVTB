@@ -45,7 +45,8 @@ public class GreetingController {
 
     @PostMapping("/save")
     public String saveProduct(@ModelAttribute("product") Product product) {
-        greetingClient.saveProduct(product);
+        Long id = product.getId();
+        greetingClient.saveProduct(id == null ? 0 : id, product.getTitle(), product.getPrice());
         return "redirect:/product";
     }
 

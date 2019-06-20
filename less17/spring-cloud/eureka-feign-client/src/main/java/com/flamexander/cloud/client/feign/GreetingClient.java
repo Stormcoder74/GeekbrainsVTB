@@ -14,8 +14,9 @@ public interface GreetingClient {
     List<Product> getProducts();
 
     @PostMapping("/product/save")
-//    void saveProduct(@ModelAttribute(value = "product") Product product);
-    void saveProduct(@RequestParam("product") Product product);
+    void saveProduct(@RequestParam(value = "id") Long id,
+                     @RequestParam(value = "title") String title,
+                     @RequestParam(value = "price") Double price);
 
     @DeleteMapping("/product/delete/{id}")
     void deleteProduct(@PathVariable(value = "id") Long id);

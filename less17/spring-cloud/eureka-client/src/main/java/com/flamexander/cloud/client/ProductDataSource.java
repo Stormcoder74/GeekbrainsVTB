@@ -2,7 +2,7 @@ package com.flamexander.cloud.client;
 
 import org.springframework.web.bind.annotation.*;
 
-public interface DataSource {
+public interface ProductDataSource {
     @GetMapping("/product/{id}")
     Product product(@PathVariable Long id);
 
@@ -10,7 +10,9 @@ public interface DataSource {
     Iterable<Product> getProducts();
 
     @PostMapping("/product/save")
-    void save(@RequestParam("product") Product product);
+    void save(@RequestParam("id") Long id,
+              @RequestParam("title") String title,
+              @RequestParam("price") Double price);
 
     @DeleteMapping("/product/delete/{id}")
     void delete(@PathVariable Long id);
