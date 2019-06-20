@@ -1,5 +1,6 @@
 package com.flamexander.auth.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,10 +11,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.sql.DataSource;
+
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+    private DataSource dataSource;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Override
-    @Bean
+    @Bean(name = "authenticationManagerBean")
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
@@ -26,13 +36,6 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("alex")
-                .password("{noop}123")
-                .roles("USER")
-                .and()
-                .withUser("bob")
-                .password("{noop}pass2")
-                .roles("USER", "ADMIN");
+        auth.jdbcAuthentication().dataSource(dataSource);
     }
 }

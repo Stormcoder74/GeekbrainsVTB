@@ -1,6 +1,7 @@
 package com.flamexander.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,6 +24,7 @@ public class JWTOAuth2Config extends AuthorizationServerConfigurerAdapter {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+//    @Qualifier(value = "authenticationManagerBean") TODO разобраться
     private UserDetailsService userDetailsService;
 
     @Autowired
