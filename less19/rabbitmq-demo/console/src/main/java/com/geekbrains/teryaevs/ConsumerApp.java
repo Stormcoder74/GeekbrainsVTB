@@ -2,9 +2,7 @@ package com.geekbrains.teryaevs;
 
 import com.rabbitmq.client.*;
 
-import java.io.IOException;
-
-public class MainApp {
+public class ConsumerApp {
     public static void main(String[] args) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername("admin");
@@ -14,17 +12,21 @@ public class MainApp {
         Connection conn = factory.newConnection();
         Channel channel = conn.createChannel();
 
-        channel.exchangeDeclare("dexc", "direct", true);
-        String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, "dexc", "woo");
-
-        channel.basicPublish("dexc", "woo", null, "Java".getBytes());
+        String queueName = "Geek_DZ_19";
+        channel.queueDeclare(queueName, false, false, true, null);
 
         channel.basicConsume(queueName, new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope,
-                                       AMQP.BasicProperties properties, byte[] body) throws IOException {
-                System.out.println(new String(body));
+                                       AMQP.BasicProperties properties, byte[] body) {
+                System.out.println("Recieved new task! To do it?");
+                System.out.println("Yes, do it.");
+                try {
+                    Thread.sleep(3500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(new String(body) + " done!");
             }
         });
     }

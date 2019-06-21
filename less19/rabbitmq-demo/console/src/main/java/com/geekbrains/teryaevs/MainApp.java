@@ -2,7 +2,9 @@ package com.geekbrains.teryaevs;
 
 import com.rabbitmq.client.*;
 
-public class ProduserApp {
+import java.io.IOException;
+
+public class MainApp {
     public static void main(String[] args) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername("admin");
@@ -16,10 +18,14 @@ public class ProduserApp {
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind(queueName, "dexc", "woo");
 
-        for (int i = 0; i < 30; i++) {
-            String task = "Task #" + i;
-            channel.basicPublish("dexc", "woo", null, task.getBytes());
-            Thread.sleep(3000);
-        }
+        channel.basicPublish("dexc", "woo", null, "Java".getBytes());
+
+        channel.basicConsume(queueName, new DefaultConsumer(channel) {
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope,
+                                       AMQP.BasicProperties properties, byte[] body) throws IOException {
+                System.out.println(new String(body));
+            }
+        });
     }
 }
