@@ -5,6 +5,8 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+import java.util.Scanner;
+
 public class TaskReceiverApp {
 
     private static final String TASK_QUEUE_NAME = "task_queue1";
@@ -23,28 +25,25 @@ public class TaskReceiverApp {
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
 
-            System.out.println(" [x] Received '" + message + "'");
+            System.out.println("Received new task: '" + message + "'. Do it!");
             try {
-                doWork(message);
-
-            } finally {
-                System.out.println(" [x] Done");
+                System.out.println(doWork(message));
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+            } catch (Exception e) {
+                System.out.println("I can't do it");
+                System.exit(1);
             }
         };
         boolean autoAck = false;
         channel.basicConsume(TASK_QUEUE_NAME, autoAck, deliverCallback, consumerTag -> { });
     }
 
-    private static void doWork(String task) {
-        for (char ch : task.toCharArray()) {
-            if (ch == '.') {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException _ignored) {
-                    Thread.currentThread().interrupt();
-                }
-            }
+    private static String doWork(String task) throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        String execution = scanner.nextLine();
+        if ("done".equals(execution)){
+            return task + " is done";
         }
+        throw new Exception();
     }
 }
