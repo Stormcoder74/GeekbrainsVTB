@@ -2,4 +2,11 @@
 ...
 надо посмотреть
 ...
-00:34:20 - новая тема: системы обмена сообщениями
+00:34:20 - новая тема: системы обмена сообщениями ActiveMQ
+00:47:00 - системы обмена сообщениями RabbitMQ
+
+"D:\Program Files\RabbitMQ Server\rabbitmq_server-3.7.15\sbin\rabbitmq-plugins" enable rabbitmq_management
+"D:\Program Files\RabbitMQ Server\rabbitmq_server-3.7.15\sbin\rabbitmqctl" add_user admin admin
+"D:\Program Files\RabbitMQ Server\rabbitmq_server-3.7.15\sbin\rabbitmqctl" set_permissions -p / admin ".*" ".*" ".*"
+
+01:48:00 - пауза
